@@ -1,4 +1,4 @@
 name: Plugin
 version: '${version}'
-main: net.gze1206.plugin.Plugin
+main: net.gze1206.plugin.Main
 api-version: '1.20'

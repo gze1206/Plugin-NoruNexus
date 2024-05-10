@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.24'
 }
 
 group = 'net.gze1206'
@@ -19,6 +20,7 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 def targetJavaVersion = 17
@@ -48,5 +50,15 @@ processResources {
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
         expand props
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }

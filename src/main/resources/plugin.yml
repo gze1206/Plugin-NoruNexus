@@ -2,3 +2,5 @@ name: Plugin
 version: '${version}'
 main: net.gze1206.plugin.Main
 api-version: '1.20'
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10

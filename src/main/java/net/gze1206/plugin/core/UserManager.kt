@@ -12,12 +12,12 @@ class UserManager {
 
             player.displayName(user!!.getDisplayName())
 
-            Main.instance!!.logger.info("플레이어 ${player.name} 입장")
+            Main.log!!.info("플레이어 ${player.name} 입장")
             return user
         }
 
         fun removePlayer(player: Player) {
-            Main.instance!!.logger.info("플레이어 ${player.name} 퇴장")
+            Main.log!!.info("플레이어 ${player.name} 퇴장")
         }
 
         fun getUser(player: Player) : User? {

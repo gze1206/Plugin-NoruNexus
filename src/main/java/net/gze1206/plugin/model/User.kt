@@ -37,7 +37,7 @@ data class User (
             val effected = statement.executeUpdate()
 
             if (effected <= 0) {
-                Main.instance!!.logger.severe("행이 추가되지 않았습니다. [${user.uuid},${user.nickname},${user.prefix},${user.money}]")
+                Main.log!!.severe("행이 추가되지 않았습니다. [${user.uuid},${user.nickname},${user.prefix},${user.money}]")
                 return null
             }
 
@@ -80,6 +80,7 @@ data class User (
         statement.setString(2, prefix)
         statement.setLong(3, money)
 
+        Main.log!!.info("유저 정보 갱신 [$uuid,$nickname,$prefix,$money]")
         return 0 < statement.executeUpdate()
     }
 }

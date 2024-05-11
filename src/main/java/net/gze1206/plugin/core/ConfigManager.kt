@@ -13,10 +13,13 @@ object ConfigManager {
     val title : ConfigFile = ConfigFile(PATH, "title.yml")
 
     fun init() {
-        config.options().copyDefaults(true)
-        config.addDefault("title-trigger.${UserMoneyUpdateEvent.RICH}", 100)
-        config.addDefault("title-trigger.${UserMoneyUpdateEvent.RIICH}", 10000)
-        config.addDefault("title-trigger.${UserMoneyUpdateEvent.RIIICH}", 1000000)
+        config.run {
+            options().copyDefaults(true)
+
+            addDefault("title-trigger.${UserMoneyUpdateEvent.RICH}", 100)
+            addDefault("title-trigger.${UserMoneyUpdateEvent.RIICH}", 10000)
+            addDefault("title-trigger.${UserMoneyUpdateEvent.RIIICH}", 1000000)
+        }
 
         Title.initConfig()
     }

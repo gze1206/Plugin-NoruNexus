@@ -3,7 +3,6 @@ package net.gze1206.plugin.model
 import net.gze1206.plugin.Main
 import net.gze1206.plugin.event.UserMoneyUpdateEvent
 import net.gze1206.plugin.gui.ScoreboardBuilder
-import net.gze1206.plugin.utils.not
 import net.gze1206.plugin.utils.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -19,15 +18,18 @@ data class User (
     var money: Long,
 ) {
     companion object {
+        val scoreboardBuilder = ScoreboardBuilder()
+
         fun createTable(conn: Connection) {
-            val statement = conn.createStatement()
-            statement.execute("""CREATE TABLE IF NOT EXISTS Users (
-                |    Id TEXT PRIMARY KEY,
-                |    Nickname TEXT,
-                |    Title TEXT,
-                |    Money INTEGER
-                |)""".trimMargin())
-            statement.close()
+            conn.createStatement().run {
+                execute("""CREATE TABLE IF NOT EXISTS Users (
+                    |    Id TEXT PRIMARY KEY,
+                    |    Nickname TEXT,
+                    |    Title TEXT,
+                    |    Money INTEGER
+                    |)""".trimMargin())
+                close()
+            }
         }
 
         fun create(player: Player) : User? {
@@ -39,12 +41,12 @@ data class User (
                 val title = user!!.title
                 val money = user!!.money
 
-                it.setString(1, uuid.toString())
-                it.setString(2, nickname)
-                it.setString(3, title)
-                it.setLong(4, money)
+                setString(1, uuid.toString())
+                setString(2, nickname)
+                setString(3, title)
+                setLong(4, money)
 
-                val effected = it.executeUpdate()
+                val effected = executeUpdate()
 
                 if (effected <= 0) {
                     Main.log!!.severe("행이 추가되지 않았습니다. [$uuid,$nickname,$title,$money]")
@@ -61,9 +63,9 @@ data class User (
         fun get(player: Player) : User? {
             var user : User? = null
             Main.db.query("SELECT * FROM Users WHERE Id = ?") {
-                it.setString(1, player.uniqueId.toString())
+                setString(1, player.uniqueId.toString())
 
-                val result = it.executeQuery()
+                val result = executeQuery()
                 if (!result.next())
                     return@query true
 
@@ -80,26 +82,21 @@ data class User (
         }
     }
 
-    private val scoreboardBuilder = ScoreboardBuilder()
-
     private fun update() : Boolean {
-        var succeed = false
-        Main.db.query("UPDATE Users SET Nickname = ?, Title = ?, Money = ? WHERE Id = ?") {
-            it.setString(4, uuid.toString())
-            it.setString(1, nickname)
-            it.setString(2, title)
-            it.setLong(3, money)
+         return Main.db.query("UPDATE Users SET Nickname = ?, Title = ?, Money = ? WHERE Id = ?") {
+            setString(4, uuid.toString())
+            setString(1, nickname)
+            setString(2, title)
+            setLong(3, money)
 
-            succeed = 0 < it.executeUpdate()
+            val succeed = 0 < executeUpdate()
             Main.log!!.info("유저 정보 갱신 ${if (succeed) "성공" else "실패"} [$uuid,$nickname,$title,$money]")
 
-            return@query true
+            return@query succeed
         }
-
-        return succeed
     }
 
-    fun transaction(block: (User) -> Unit) : Boolean {
+    fun transaction(block: User.() -> Unit) : Boolean {
         val nickname = nickname
         val title = title
         val money = money
@@ -122,22 +119,10 @@ data class User (
         return false
     }
 
-    fun updateScoreboard(player: Player) {
-        val title = if (title == null) null else Title.get(title!!)
-        val displayPrefix = title?.displayName ?: this.title
-        val color = title?.color ?: "#ffffff"
-
-        scoreboardBuilder.let {
-            it[1] = !"칭호 : " + if (this.title == null) !"(없음)" else Component.text("[$displayPrefix]", TextColor.fromHexString(color))
-            it[2] = !"소지금 : ${money}원"
-
-            player.scoreboard = it.scoreboard()
-        }
-    }
-
     fun getDisplayName() : Component {
         val nicknameComponent = Component.text(nickname, NamedTextColor.WHITE)
         if (title == null) return nicknameComponent
+
         val title = Title.get(title!!)
         val displayPrefix = title?.displayName ?: this.title
         val color = title?.color ?: "#ffffff"

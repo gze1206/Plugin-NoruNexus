@@ -2,6 +2,7 @@ package net.gze1206.plugin.command
 
 import net.gze1206.plugin.Main
 import net.gze1206.plugin.core.UserManager
+import net.gze1206.plugin.utils.updateScoreboard
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -31,8 +32,8 @@ object UserMoneyCommand : CommandExecutor, TabExecutor {
             return false
         }
 
-        val succeed = true == UserManager.getUser(target)?.transaction {
-            it.money = amount
+        val succeed = UserManager.getUser(target).transaction {
+            money = amount
         }
 
         if (!succeed) {
@@ -40,9 +41,9 @@ object UserMoneyCommand : CommandExecutor, TabExecutor {
             return false
         }
 
-        UserManager.getUser(target)?.let {
-            sender.sendMessage("소지 금액이 ${it.money}로 변경되었습니다.")
-            it.updateScoreboard(target)
+        UserManager.getUser(target).run {
+            sender.sendMessage("소지 금액이 ${money}로 변경되었습니다.")
+            target.updateScoreboard(this)
         }
 
         return true

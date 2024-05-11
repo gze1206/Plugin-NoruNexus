@@ -4,14 +4,19 @@ import net.gze1206.plugin.Main
 import net.gze1206.plugin.command.ReloadCommand
 import net.gze1206.plugin.command.TitleCommand
 import net.gze1206.plugin.command.UserMoneyCommand
+import org.bukkit.command.CommandExecutor
 
 object CommandManager {
     fun register() {
-        Main.instance?.let {
-            it.server.run {
-                getPluginCommand("money")!!.setExecutor(UserMoneyCommand)
-                getPluginCommand("reload-config")!!.setExecutor(ReloadCommand)
-                getPluginCommand("title")!!.setExecutor(TitleCommand)
+        Main.instance?.run {
+            server.run {
+                fun setPluginExecutor(name: String, executor: CommandExecutor) {
+                    getPluginCommand(name)!!.setExecutor(executor)
+                }
+
+                setPluginExecutor("money", UserMoneyCommand)
+                setPluginExecutor("reload-config", ReloadCommand)
+                setPluginExecutor("title", TitleCommand)
             }
         }
     }

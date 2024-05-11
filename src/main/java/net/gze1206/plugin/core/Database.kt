@@ -21,19 +21,22 @@ class Database {
         createTables()
     }
 
-    fun query(sql: String, body: (PreparedStatement) -> Boolean) {
+    fun query(sql: String, body: PreparedStatement.() -> Boolean) : Boolean {
         val conn = Main.db.getConnection(false)
         val statement = conn.prepareStatement(sql)
 
         try {
-            if (body(statement)) {
+            return if (body(statement)) {
                 conn.commit()
+                true
             } else {
                 conn.rollback()
+                false
             }
         } catch (e: Exception) {
             Main.log!!.severe("SQL FAILED : ${e.message}")
             conn.rollback()
+            return false
         } finally {
             statement.close()
             conn.close()

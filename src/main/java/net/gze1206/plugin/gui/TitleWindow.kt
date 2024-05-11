@@ -4,6 +4,7 @@ import net.gze1206.plugin.core.Constants
 import net.gze1206.plugin.core.UserManager
 import net.gze1206.plugin.model.Title
 import net.gze1206.plugin.utils.not
+import net.gze1206.plugin.utils.updateScoreboard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
@@ -106,29 +107,22 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         when (buttonUid) {
             PREV_BUTTON_UID -> update(page - 1)
             NEXT_BUTTON_UID -> update(page + 1)
-            else -> {
-                if (buttonUid.isBlank()) {
-                    setTitle(null)
-                    return
-                }
-
-                setTitle(buttonUid)
-            }
+            else -> setTitle(buttonUid.ifBlank { null })
         }
     }
 
     private fun setTitle(titleId: String?) {
-        val succeed = true == UserManager.getUser(player)?.transaction {
-            it.title = titleId
+        val succeed = UserManager.getUser(player).transaction {
+            title = titleId
         }
 
         if (!succeed) return
 
         UserManager.getUser(player).let {
-            val displayName = it!!.getDisplayName()
+            val displayName = it.getDisplayName()
             player.displayName(displayName)
             player.playerListName(displayName)
-            it.updateScoreboard(player)
+            player.updateScoreboard(it)
         }
     }
 }

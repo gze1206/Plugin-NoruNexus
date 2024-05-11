@@ -32,5 +32,5 @@ class UserMoneyUpdateEvent(val sender: User, val money: Long, isAsync: Boolean) 
         }
     }
 
-    override fun getHandlers(): HandlerList = handlerList
+    override fun getHandlers() : HandlerList = handlerList
 }

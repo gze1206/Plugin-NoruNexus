@@ -8,8 +8,6 @@ object EventManager {
         Main.instance?.let {
             it.server.pluginManager.apply {
                 registerEvents(PlayerJoinEvent, it)
-                registerEvents(PlayerKickEvent, it)
-                registerEvents(PlayerQuitEvent, it)
                 registerEvents(InventoryClickEvent, it)
                 registerEvents(UserMoneyUpdateEvent, it)
                 registerEvents(UserGetTitleEvent, it)

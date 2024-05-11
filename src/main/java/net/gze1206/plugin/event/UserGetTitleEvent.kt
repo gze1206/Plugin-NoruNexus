@@ -45,5 +45,5 @@ class UserGetTitleEvent(val sender: User, val title: Title, isAsync: Boolean) : 
         }
     }
 
-    override fun getHandlers(): HandlerList = handlerList
+    override fun getHandlers() : HandlerList = handlerList
 }

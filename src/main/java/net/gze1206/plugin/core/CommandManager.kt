@@ -1,6 +1,7 @@
 package net.gze1206.plugin.core
 
 import net.gze1206.plugin.Main
+import net.gze1206.plugin.command.ReloadCommand
 import net.gze1206.plugin.command.TitleCommand
 import net.gze1206.plugin.command.UserMoneyCommand
 
@@ -9,6 +10,7 @@ object CommandManager {
         Main.instance?.let {
             it.server.run {
                 getPluginCommand("money")!!.setExecutor(UserMoneyCommand)
+                getPluginCommand("reload-config")!!.setExecutor(ReloadCommand)
                 getPluginCommand("title")!!.setExecutor(TitleCommand)
             }
         }

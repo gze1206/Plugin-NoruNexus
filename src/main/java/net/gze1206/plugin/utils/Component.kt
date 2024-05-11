@@ -1,8 +1,9 @@
 package net.gze1206.plugin.utils
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 
-fun String.component() = Component.text(this)
+fun String.component() = Component.text(this, NamedTextColor.WHITE)
 val String.component : Component
     get() = component()
 operator fun String.not() = component

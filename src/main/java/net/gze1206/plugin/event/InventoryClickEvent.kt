@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType
 object InventoryClickEvent : Listener {
 
     @EventHandler
-    fun onClick(e: InventoryClickEvent) {
+    fun onInventoryClickEvent(e: InventoryClickEvent) {
         val inventoryWindow = InventoryWindow.inventoryGuiMap[e.whoClicked.uniqueId]
         if (inventoryWindow?.inventory() != e.inventory) return
 

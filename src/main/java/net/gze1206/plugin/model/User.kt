@@ -1,6 +1,7 @@
 package net.gze1206.plugin.model
 
 import net.gze1206.plugin.Main
+import net.gze1206.plugin.event.UserMoneyUpdateEvent
 import net.gze1206.plugin.gui.ScoreboardBuilder
 import net.gze1206.plugin.utils.not
 import net.gze1206.plugin.utils.plus
@@ -108,7 +109,12 @@ data class User (
         if (nickname == this.nickname && title == this.title && money == this.money)
             return false
 
-        if (update()) return true
+        if (update()) {
+            if (money != this.money) {
+                UserMoneyUpdateEvent(this, this.money, false).callEvent()
+            }
+            return true
+        }
 
         this.nickname = nickname
         this.title = title

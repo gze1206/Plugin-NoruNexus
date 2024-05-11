@@ -2,22 +2,35 @@ package net.gze1206.plugin.model
 
 import net.gze1206.plugin.Main
 import net.gze1206.plugin.core.ConfigManager
+import net.gze1206.plugin.event.UserGetTitleEvent
+import net.gze1206.plugin.event.UserMoneyUpdateEvent
+import org.bukkit.configuration.file.FileConfiguration
 import java.sql.Connection
 
 data class Title(
     val id : String?,
     val displayName : String,
     val lore: String,
-    val color : String
+    val color : String,
+    val globalBroadcast : Boolean
 ) {
     companion object {
         fun initConfig() {
+
+            fun FileConfiguration.addTitle(id: String, displayName: String, lore: String, color: String, globalBroadcast: Boolean = false) {
+                addDefault("titles.${id}.displayName", displayName)
+                addDefault("titles.${id}.lore", lore)
+                addDefault("titles.${id}.color", color)
+                addDefault("titles.${id}.globalBroadcast", globalBroadcast)
+            }
+
             ConfigManager.title.getConfig().let {
                 it.options().copyDefaults(true)
 
-                it.addDefault("titles.test.displayName", "테스트")
-                it.addDefault("titles.test.lore", "테스트를 위한 칭호입니다.")
-                it.addDefault("titles.test.color", "#16f0f1")
+                it.addTitle("test", "테스트", "테스트를 위한 칭호입니다.", "#16f0f1")
+                it.addTitle(UserMoneyUpdateEvent.RICH, "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", "#16f0f1", true)
+                it.addTitle(UserMoneyUpdateEvent.RIICH, "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", "#da0bee", true)
+                it.addTitle(UserMoneyUpdateEvent.RIIICH, "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", "#eec00b", true)
             }
         }
 
@@ -39,13 +52,15 @@ data class Title(
                 id,
                 config.getString("titles.${id}.displayName")!!,
                 config.getString("titles.${id}.lore")!!,
-                config.getString("titles.${id}.color")!!
+                config.getString("titles.${id}.color")!!,
+                config.getBoolean("titles.${id}.globalBroadcast")
             )
         }
 
-        fun give(user: User, titleId: String) {
-            get(titleId) ?: return
+        fun give(user: User, titleId: String) : Boolean {
+            val title = get(titleId) ?: return false
 
+            var succeed = false
             Main.db.query("SELECT * FROM UserTitles WHERE UserId = ? and TitleId = ?") {
                 it.setString(1, user.uuid.toString())
                 it.setString(2, titleId)
@@ -62,14 +77,21 @@ data class Title(
                     Main.log!!.severe("행이 추가되지 않았습니다. [${user.uuid},$titleId]")
                     return@query false
                 }
+                succeed = true
 
                 return@query true
             }
+
+            if (succeed) {
+                UserGetTitleEvent(user, title, false).callEvent()
+            }
+
+            return succeed
         }
 
         fun getOwnTitles(user: User?) : ArrayList<Title> {
             val titles = arrayListOf<Title>()
-            titles.add(Title(null, "(없음)", "칭호를 해제합니다.", "#ffffff"))
+            titles.add(Title(null, "(없음)", "칭호를 해제합니다.", "#ffffff", false))
 
             if (user != null) {
                 Main.db.query("SELECT * FROM UserTitles WHERE UserId = ?") {

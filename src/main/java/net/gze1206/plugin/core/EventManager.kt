@@ -1,10 +1,7 @@
 package net.gze1206.plugin.core
 
 import net.gze1206.plugin.Main
-import net.gze1206.plugin.event.InventoryClickEvent
-import net.gze1206.plugin.event.PlayerJoinEvent
-import net.gze1206.plugin.event.PlayerKickEvent
-import net.gze1206.plugin.event.PlayerQuitEvent
+import net.gze1206.plugin.event.*
 
 object EventManager {
     fun register() {
@@ -14,6 +11,8 @@ object EventManager {
                 registerEvents(PlayerKickEvent, it)
                 registerEvents(PlayerQuitEvent, it)
                 registerEvents(InventoryClickEvent, it)
+                registerEvents(UserMoneyUpdateEvent, it)
+                registerEvents(UserGetTitleEvent, it)
             }
         }
     }

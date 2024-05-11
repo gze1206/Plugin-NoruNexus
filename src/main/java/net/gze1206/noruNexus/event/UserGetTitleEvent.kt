@@ -44,6 +44,7 @@ class UserGetTitleEvent(val sender: User, val title: Title, isAsync: Boolean) : 
                 player.sendMessage("/title 명령어를 사용해 칭호를 확인하고 착용할 수 있습니다.")
             }
         }
+
     }
 
     override fun getHandlers() : HandlerList = handlerList

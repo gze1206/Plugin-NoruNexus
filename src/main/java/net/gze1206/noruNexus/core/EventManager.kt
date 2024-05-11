@@ -16,6 +16,7 @@ object EventManager {
                 registerEvents(InventoryClickEvent)
                 registerEvents(UserMoneyUpdateEvent)
                 registerEvents(UserGetTitleEvent)
+                registerEvents(PlayerInteractEntityEvent)
             }
         }
     }

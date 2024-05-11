@@ -31,6 +31,7 @@ class UserMoneyUpdateEvent(val sender: User, val money: Long, isAsync: Boolean) 
             if (e.money >= config.getLong("title-trigger.$RIIICH"))
                 Title.give(e.sender, RIIICH)
         }
+
     }
 
     override fun getHandlers() : HandlerList = handlerList

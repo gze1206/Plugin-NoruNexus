@@ -5,10 +5,11 @@ import net.gze1206.plugin.core.UserManager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 
-object UserMoneyCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
+object UserMoneyCommand : CommandExecutor, TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?) : Boolean {
         if (sender !is Player) {
             sender.sendMessage("플레이어만 사용 가능한 명령어입니다.")
             return false
@@ -45,5 +46,13 @@ object UserMoneyCommand : CommandExecutor {
         }
 
         return true
+    }
+
+    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>?) : MutableList<String>? {
+        // 첫 번째 매개 변수는 유저 이름
+        if (args == null || args.size < 2) return null
+
+        // 두 번째는 숫자니까 자동 완성 없음
+        return mutableListOf()
     }
 }

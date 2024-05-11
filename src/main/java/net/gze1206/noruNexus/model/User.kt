@@ -126,7 +126,7 @@ data class User (
 
         val title = Title.get(title!!)
         val displayPrefix = title?.displayName ?: this.title
-        val color = title?.color ?: "#ffffff"
+        val color = (title?.rarity ?: Title.Rarity.Normal).color
         return Component.text("[$displayPrefix] ", TextColor.fromHexString(color)) + nicknameComponent
     }
 }

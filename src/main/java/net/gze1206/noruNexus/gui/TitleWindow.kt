@@ -62,10 +62,11 @@ class TitleWindow(private val player: Player) : InventoryWindow {
             }
 
             val title = titles[it]
-            val item = ItemStack(if (title.id == null) Material.BOOK else Material.KNOWLEDGE_BOOK, 1)
+            val item = ItemStack(if (title.id == null) Material.BARRIER else Material.NAME_TAG, 1)
             val meta = item.itemMeta
-            meta.displayName(Component.text(title.displayName, TextColor.fromHexString(title.color)))
+            meta.displayName(Component.text(title.displayName, TextColor.fromHexString(title.rarity.color)))
             meta.lore(listOf(!title.lore))
+            meta.setCustomModelData(title.rarity.customModelId)
             meta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
             meta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, title.id ?: "")
             item.itemMeta = meta
@@ -80,6 +81,7 @@ class TitleWindow(private val player: Player) : InventoryWindow {
             val prev = ItemStack(Material.ARROW, 1)
             val prevMeta = prev.itemMeta
             prevMeta.displayName(!"이전 페이지")
+            prevMeta.setCustomModelData(1)
             prevMeta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
             prevMeta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, PREV_BUTTON_UID)
             prev.itemMeta = prevMeta
@@ -96,6 +98,7 @@ class TitleWindow(private val player: Player) : InventoryWindow {
             val next = ItemStack(Material.ARROW, 1)
             val nextMeta = next.itemMeta
             nextMeta.displayName(!"다음 페이지")
+            nextMeta.setCustomModelData(2)
             nextMeta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
             nextMeta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, NEXT_BUTTON_UID)
             next.itemMeta = nextMeta

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 fun Player.updateScoreboard(user: User) {
     val title = if (user.title == null) null else Title.get(user.title!!)
     val displayPrefix = title?.displayName ?: user.title
-    val color = title?.color ?: "#ffffff"
+    val color = (title?.rarity ?: Title.Rarity.Normal).color
 
     User.scoreboardBuilder.let {
         it[1] = !"칭호 : " + if (user.title == null) !"(없음)" else Component.text("[$displayPrefix]", TextColor.fromHexString(color))

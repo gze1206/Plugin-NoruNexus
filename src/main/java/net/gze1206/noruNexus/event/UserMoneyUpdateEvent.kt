@@ -10,12 +10,13 @@ import org.bukkit.event.Listener
 
 class UserMoneyUpdateEvent(val sender: User, val money: Long, isAsync: Boolean) : Event(isAsync) {
     companion object : Listener {
-        const val RICH = "rich"
-        const val RIICH = "riich"
-        const val RIIICH = "riiich"
+        const val RICH = "0-rich"
+        const val RIICH = "1-riich"
+        const val RIIICH = "2-riiich"
 
         private val handlerList = HandlerList()
 
+        @Suppress("unused")
         @JvmStatic
         fun getHandlerList() = handlerList
 

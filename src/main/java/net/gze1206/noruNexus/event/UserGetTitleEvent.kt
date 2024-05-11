@@ -17,13 +17,14 @@ class UserGetTitleEvent(val sender: User, val title: Title, isAsync: Boolean) : 
     companion object : Listener {
         private val handlerList = HandlerList()
 
+        @Suppress("unused")
         @JvmStatic
         fun getHandlerList() = handlerList
 
         @EventHandler
         fun onUserGetTitleEvent(e: UserGetTitleEvent) {
             val player = Main.getInstance().server.getPlayer(e.sender.uuid) ?: return
-            val titleComponent = Component.text("[${e.title.displayName}]", TextColor.fromHexString(e.title.color))
+            val titleComponent = Component.text("[${e.title.displayName}]", TextColor.fromHexString(e.title.rarity.color))
 
             if (e.title.globalBroadcast) {
                 Main.getInstance().server.sendMessage(

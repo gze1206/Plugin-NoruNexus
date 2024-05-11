@@ -4,6 +4,11 @@ main: net.gze1206.plugin.Main
 api-version: '1.20'
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10
+permissions:
+  plugin.admin:
+    default: op
 commands:
   money:
     description: (WIP) 소지금 변경
+    usage: "/<command> <username> <amount>"
+    permission: plugin.admin

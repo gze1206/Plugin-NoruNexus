@@ -1,5 +1,6 @@
 package net.gze1206.plugin.command
 
+import net.gze1206.plugin.Main
 import net.gze1206.plugin.core.UserManager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -12,21 +13,30 @@ object UserMoneyCommand : CommandExecutor {
             sender.sendMessage("플레이어만 사용 가능한 명령어입니다.")
             return false
         }
+        if (args?.size != 2) {
+            sender.sendMessage("올바른 명령어 사용법이 아닙니다.")
+            return false
+        }
 
-        val value = args?.get(0)?.toLongOrNull()
-        if (value == null) {
+        val target = Main.instance!!.server.getPlayer(args[0])
+        if (target == null) {
+            sender.sendMessage("대상 유저를 찾지 못했습니다.")
+            return false
+        }
+
+        val amount = args[1].toLongOrNull()
+        if (amount == null) {
             sender.sendMessage("올바른 값이 아닙니다.")
             return false
         }
 
-        val player = sender.player!!
-        UserManager.getUser(player)?.let {
-            it.money = value
+        UserManager.getUser(target)?.let {
+            it.money = amount
             it.update()
         }
 
-        UserManager.getUser(player)?.let {
-            player.sendMessage("소지 금액이 ${it.money}로 변경되었습니다.")
+        UserManager.getUser(target)?.let {
+            sender.sendMessage("소지 금액이 ${it.money}로 변경되었습니다.")
         }
 
         return true

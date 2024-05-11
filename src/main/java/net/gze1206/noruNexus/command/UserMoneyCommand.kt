@@ -1,8 +1,8 @@
-package net.gze1206.plugin.command
+package net.gze1206.noruNexus.command
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.core.UserManager
-import net.gze1206.plugin.utils.updateScoreboard
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.core.UserManager
+import net.gze1206.noruNexus.utils.updateScoreboard
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -20,7 +20,7 @@ object UserMoneyCommand : CommandExecutor, TabExecutor {
             return false
         }
 
-        val target = Main.instance!!.server.getPlayer(args[0])
+        val target = Main.getInstance().server.getPlayer(args[0])
         if (target == null) {
             sender.sendMessage("대상 유저를 찾지 못했습니다.")
             return false

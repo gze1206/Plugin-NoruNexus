@@ -1,6 +1,6 @@
-name: Plugin
+name: NoruNexus
 version: '${version}'
-main: net.gze1206.plugin.Main
+main: net.gze1206.noruNexus.Main
 api-version: '1.20'
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10

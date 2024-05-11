@@ -1,7 +1,7 @@
-package net.gze1206.plugin.utils
+package net.gze1206.noruNexus.utils
 
-import net.gze1206.plugin.model.Title
-import net.gze1206.plugin.model.User
+import net.gze1206.noruNexus.model.Title
+import net.gze1206.noruNexus.model.User
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player

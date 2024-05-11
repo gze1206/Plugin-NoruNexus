@@ -1,9 +1,9 @@
-package net.gze1206.plugin.event
+package net.gze1206.noruNexus.event
 
-import net.gze1206.plugin.core.Constants.BUTTON_UID_KEY
-import net.gze1206.plugin.core.Constants.GUI_UID_KEY
-import net.gze1206.plugin.gui.GuiType
-import net.gze1206.plugin.gui.InventoryWindow
+import net.gze1206.noruNexus.core.Constants.BUTTON_UID_KEY
+import net.gze1206.noruNexus.core.Constants.GUI_UID_KEY
+import net.gze1206.noruNexus.gui.GuiType
+import net.gze1206.noruNexus.gui.InventoryWindow
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent

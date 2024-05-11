@@ -1,28 +1,28 @@
-package net.gze1206.plugin.core
+package net.gze1206.noruNexus.core
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.model.Title
-import net.gze1206.plugin.model.User
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.model.Title
+import net.gze1206.noruNexus.model.User
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
+import kotlin.io.path.Path
 
-class Database {
-    companion object {
-        const val DB_PATH = "${Constants.DATA_DIR}/database.db"
-    }
+object Database {
+    private val PATH = Main.getInstance().dataFolder.absolutePath
+    private val DB_PATH = Path(PATH, "database.db").toAbsolutePath()
 
     fun init() {
         Class.forName("org.sqlite.JDBC")
-        val dataDir = File(Constants.DATA_DIR)
+        val dataDir = File(PATH)
         if (!dataDir.exists()) dataDir.mkdirs()
 
         createTables()
     }
 
     fun query(sql: String, body: PreparedStatement.() -> Boolean) : Boolean {
-        val conn = Main.db.getConnection(false)
+        val conn = getConnection(false)
         val statement = conn.prepareStatement(sql)
 
         try {
@@ -34,7 +34,7 @@ class Database {
                 false
             }
         } catch (e: Exception) {
-            Main.log!!.severe("SQL FAILED : ${e.message}")
+            Main.getLog().severe("SQL FAILED : ${e.message}")
             conn.rollback()
             return false
         } finally {
@@ -44,10 +44,11 @@ class Database {
     }
 
     private fun createTables() {
-        val conn = getConnection()
-        User.createTable(conn)
-        Title.createTable(conn)
-        conn.close()
+        getConnection().run {
+            User.createTable(this)
+            Title.createTable(this)
+            close()
+        }
     }
 
     private fun getConnection(autoCommit: Boolean = true) : Connection {

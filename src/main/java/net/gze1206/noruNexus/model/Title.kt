@@ -1,9 +1,10 @@
-package net.gze1206.plugin.model
+package net.gze1206.noruNexus.model
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.core.ConfigManager
-import net.gze1206.plugin.event.UserGetTitleEvent
-import net.gze1206.plugin.event.UserMoneyUpdateEvent
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.core.ConfigManager
+import net.gze1206.noruNexus.core.Database
+import net.gze1206.noruNexus.event.UserGetTitleEvent
+import net.gze1206.noruNexus.event.UserMoneyUpdateEvent
 import org.bukkit.configuration.file.FileConfiguration
 import java.sql.Connection
 
@@ -60,7 +61,7 @@ data class Title(
         fun give(user: User, titleId: String) : Boolean {
             val title = get(titleId) ?: return false
 
-            val succeed = Main.db.query("SELECT * FROM UserTitles WHERE UserId = ? and TitleId = ?") {
+            val succeed = Database.query("SELECT * FROM UserTitles WHERE UserId = ? and TitleId = ?") {
                 setString(1, user.uuid.toString())
                 setString(2, titleId)
 
@@ -73,7 +74,7 @@ data class Title(
 
                     val effected = executeUpdate()
                     if (effected < 1) {
-                        Main.log!!.severe("행이 추가되지 않았습니다. [${user.uuid},$titleId]")
+                        Main.getLog().severe("행이 추가되지 않았습니다. [${user.uuid},$titleId]")
                         return@query false
                     }
                     return@query true
@@ -91,7 +92,7 @@ data class Title(
             val titles = arrayListOf<Title>()
             titles.add(Title(null, "(없음)", "칭호를 해제합니다.", "#ffffff", false))
 
-            Main.db.query("SELECT * FROM UserTitles WHERE UserId = ?") {
+            Database.query("SELECT * FROM UserTitles WHERE UserId = ?") {
                 setString(1, user.uuid.toString())
 
                 val result = executeQuery()

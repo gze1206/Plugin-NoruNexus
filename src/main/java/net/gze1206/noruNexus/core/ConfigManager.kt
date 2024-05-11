@@ -1,15 +1,15 @@
-package net.gze1206.plugin.core
+package net.gze1206.noruNexus.core
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.config.ConfigFile
-import net.gze1206.plugin.event.UserMoneyUpdateEvent
-import net.gze1206.plugin.model.Title
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.config.ConfigFile
+import net.gze1206.noruNexus.event.UserMoneyUpdateEvent
+import net.gze1206.noruNexus.model.Title
 import org.bukkit.configuration.file.FileConfiguration
 
 object ConfigManager {
-    private val PATH = Main.instance!!.dataFolder.absolutePath
+    private val PATH = Main.getInstance().dataFolder.absolutePath
 
-    val config : FileConfiguration = Main.instance!!.config
+    val config : FileConfiguration = Main.getInstance().config
     val title : ConfigFile = ConfigFile(PATH, "title.yml")
 
     fun init() {
@@ -25,12 +25,12 @@ object ConfigManager {
     }
 
     fun reloadAll() {
-        Main.instance!!.reloadConfig()
+        Main.getInstance().reloadConfig()
         title.reload()
     }
 
     fun saveAll() {
-        Main.instance!!.saveConfig()
+        Main.getInstance().saveConfig()
         title.save()
     }
 }

@@ -1,9 +1,10 @@
-package net.gze1206.plugin.model
+package net.gze1206.noruNexus.model
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.event.UserMoneyUpdateEvent
-import net.gze1206.plugin.gui.ScoreboardBuilder
-import net.gze1206.plugin.utils.plus
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.core.Database
+import net.gze1206.noruNexus.event.UserMoneyUpdateEvent
+import net.gze1206.noruNexus.gui.ScoreboardBuilder
+import net.gze1206.noruNexus.utils.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
@@ -35,7 +36,7 @@ data class User (
         fun create(player: Player) : User? {
             var user : User? = User(player.uniqueId, player.name, null, 0L)
 
-            Main.db.query("INSERT INTO Users (Id, Nickname, Title, Money) VALUES (?, ?, ?, ?)") {
+            Database.query("INSERT INTO Users (Id, Nickname, Title, Money) VALUES (?, ?, ?, ?)") {
                 val uuid = user!!.uuid
                 val nickname = user!!.nickname
                 val title = user!!.title
@@ -49,7 +50,7 @@ data class User (
                 val effected = executeUpdate()
 
                 if (effected <= 0) {
-                    Main.log!!.severe("행이 추가되지 않았습니다. [$uuid,$nickname,$title,$money]")
+                    Main.getLog().severe("행이 추가되지 않았습니다. [$uuid,$nickname,$title,$money]")
                     user = null
                     return@query false
                 }
@@ -62,7 +63,7 @@ data class User (
 
         fun get(player: Player) : User? {
             var user : User? = null
-            Main.db.query("SELECT * FROM Users WHERE Id = ?") {
+            Database.query("SELECT * FROM Users WHERE Id = ?") {
                 setString(1, player.uniqueId.toString())
 
                 val result = executeQuery()
@@ -83,14 +84,14 @@ data class User (
     }
 
     private fun update() : Boolean {
-         return Main.db.query("UPDATE Users SET Nickname = ?, Title = ?, Money = ? WHERE Id = ?") {
+         return Database.query("UPDATE Users SET Nickname = ?, Title = ?, Money = ? WHERE Id = ?") {
             setString(4, uuid.toString())
             setString(1, nickname)
             setString(2, title)
             setLong(3, money)
 
             val succeed = 0 < executeUpdate()
-            Main.log!!.info("유저 정보 갱신 ${if (succeed) "성공" else "실패"} [$uuid,$nickname,$title,$money]")
+            Main.getLog().info("유저 정보 갱신 ${if (succeed) "성공" else "실패"} [$uuid,$nickname,$title,$money]")
 
             return@query succeed
         }

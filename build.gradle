@@ -40,7 +40,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.jar {
-    archiveFileName = 'Plugin.jar'
+    archiveFileName = 'NoruNexus.jar'
     destinationDirectory = file('D:\\Dev\\private\\minecraft\\.dist\\paper_1.20.4')
 }
 

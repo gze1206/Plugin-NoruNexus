@@ -1,8 +1,8 @@
-package net.gze1206.plugin.event
+package net.gze1206.noruNexus.event
 
-import net.gze1206.plugin.core.ConfigManager
-import net.gze1206.plugin.model.Title
-import net.gze1206.plugin.model.User
+import net.gze1206.noruNexus.core.ConfigManager
+import net.gze1206.noruNexus.model.Title
+import net.gze1206.noruNexus.model.User
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList

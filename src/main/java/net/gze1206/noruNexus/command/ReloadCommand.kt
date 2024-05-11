@@ -1,6 +1,6 @@
-package net.gze1206.plugin.command
+package net.gze1206.noruNexus.command
 
-import net.gze1206.plugin.core.ConfigManager
+import net.gze1206.noruNexus.core.ConfigManager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender

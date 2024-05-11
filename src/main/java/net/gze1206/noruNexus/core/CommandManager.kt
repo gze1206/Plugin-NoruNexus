@@ -1,14 +1,14 @@
-package net.gze1206.plugin.core
+package net.gze1206.noruNexus.core
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.command.ReloadCommand
-import net.gze1206.plugin.command.TitleCommand
-import net.gze1206.plugin.command.UserMoneyCommand
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.command.ReloadCommand
+import net.gze1206.noruNexus.command.TitleCommand
+import net.gze1206.noruNexus.command.UserMoneyCommand
 import org.bukkit.command.CommandExecutor
 
 object CommandManager {
     fun register() {
-        Main.instance?.run {
+        Main.getInstance().run {
             server.run {
                 fun setPluginExecutor(name: String, executor: CommandExecutor) {
                     getPluginCommand(name)!!.setExecutor(executor)

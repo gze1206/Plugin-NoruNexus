@@ -1,11 +1,11 @@
-package net.gze1206.plugin.event
+package net.gze1206.noruNexus.event
 
-import net.gze1206.plugin.Main
-import net.gze1206.plugin.core.Constants
-import net.gze1206.plugin.model.Title
-import net.gze1206.plugin.model.User
-import net.gze1206.plugin.utils.not
-import net.gze1206.plugin.utils.plus
+import net.gze1206.noruNexus.Main
+import net.gze1206.noruNexus.core.Constants
+import net.gze1206.noruNexus.model.Title
+import net.gze1206.noruNexus.model.User
+import net.gze1206.noruNexus.utils.not
+import net.gze1206.noruNexus.utils.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.event.Event
@@ -22,11 +22,11 @@ class UserGetTitleEvent(val sender: User, val title: Title, isAsync: Boolean) : 
 
         @EventHandler
         fun onUserGetTitleEvent(e: UserGetTitleEvent) {
-            val player = Main.instance!!.server.getPlayer(e.sender.uuid) ?: return
+            val player = Main.getInstance().server.getPlayer(e.sender.uuid) ?: return
             val titleComponent = Component.text("[${e.title.displayName}]", TextColor.fromHexString(e.title.color))
 
             if (e.title.globalBroadcast) {
-                Main.instance!!.server.sendMessage(
+                Main.getInstance().server.sendMessage(
                     Constants.SYSTEM_MESSAGE_COMPONENT
                     + e.sender.getDisplayName()
                     + !"님이 "

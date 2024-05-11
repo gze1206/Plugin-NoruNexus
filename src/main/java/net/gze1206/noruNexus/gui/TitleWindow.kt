@@ -1,10 +1,10 @@
-package net.gze1206.plugin.gui
+package net.gze1206.noruNexus.gui
 
-import net.gze1206.plugin.core.Constants
-import net.gze1206.plugin.core.UserManager
-import net.gze1206.plugin.model.Title
-import net.gze1206.plugin.utils.not
-import net.gze1206.plugin.utils.updateScoreboard
+import net.gze1206.noruNexus.core.Constants
+import net.gze1206.noruNexus.core.UserManager
+import net.gze1206.noruNexus.model.Title
+import net.gze1206.noruNexus.utils.not
+import net.gze1206.noruNexus.utils.updateScoreboard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor

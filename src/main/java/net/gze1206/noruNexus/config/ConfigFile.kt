@@ -1,6 +1,6 @@
-package net.gze1206.plugin.config
+package net.gze1206.noruNexus.config
 
-import net.gze1206.plugin.Main
+import net.gze1206.noruNexus.Main
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -19,7 +19,7 @@ class ConfigFile(path: String, fileName: String) {
         try {
             config.save(file)
         } catch (e : Exception) {
-            Main.log!!.severe("${e.message}\n${e.stackTraceToString()}")
+            Main.getLog().severe("${e.message}\n${e.stackTraceToString()}")
         }
     }
 

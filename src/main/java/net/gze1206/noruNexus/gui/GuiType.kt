@@ -1,4 +1,4 @@
-package net.gze1206.plugin.gui
+package net.gze1206.noruNexus.gui
 
 enum class GuiType {
     TITLE,

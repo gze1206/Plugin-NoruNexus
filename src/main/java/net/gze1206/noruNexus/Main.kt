@@ -1,17 +1,19 @@
-package net.gze1206.plugin
+package net.gze1206.noruNexus
 
-import net.gze1206.plugin.core.CommandManager
-import net.gze1206.plugin.core.ConfigManager
-import net.gze1206.plugin.core.Database
-import net.gze1206.plugin.core.EventManager
+import net.gze1206.noruNexus.core.CommandManager
+import net.gze1206.noruNexus.core.ConfigManager
+import net.gze1206.noruNexus.core.Database
+import net.gze1206.noruNexus.core.EventManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
 class Main : JavaPlugin() {
     companion object {
-        val db = Database()
-        var instance : Main? = null
-        var log : Logger? = null
+        private var instance : Main? = null
+        fun getInstance() = instance!!
+
+        private var log : Logger? = null
+        fun getLog() = log!!
     }
 
     override fun onEnable() {
@@ -21,7 +23,7 @@ class Main : JavaPlugin() {
         CommandManager.register()
         ConfigManager.init()
         ConfigManager.saveAll()
-        db.init()
+        Database.init()
         logger.info("플러그인 활성화!")
     }
 

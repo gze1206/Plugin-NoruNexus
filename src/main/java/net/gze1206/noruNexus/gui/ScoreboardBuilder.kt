@@ -27,7 +27,7 @@ class ScoreboardBuilder {
     private fun add(line: Component) : ScoreboardBuilder {
         if (MAX_LINE < lines.size) throw IndexOutOfBoundsException("16줄을 넘을 수 없습니다.")
 
-        val name = "§r".repeat(lines.size)
+        val name = "§f".repeat(lines.size)
         val team = scoreboard.getTeam(name) ?: scoreboard.registerNewTeam(name)
         team.suffix(line)
         team.addEntry(name)

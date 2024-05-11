@@ -30,13 +30,18 @@ object UserMoneyCommand : CommandExecutor {
             return false
         }
 
-        UserManager.getUser(target)?.let {
+        val succeed = true == UserManager.getUser(target)?.transaction {
             it.money = amount
-            it.update()
+        }
+
+        if (!succeed) {
+            sender.sendMessage("수정 내용을 반영하지 못했습니다.")
+            return false
         }
 
         UserManager.getUser(target)?.let {
             sender.sendMessage("소지 금액이 ${it.money}로 변경되었습니다.")
+            it.updateScoreboard(target)
         }
 
         return true

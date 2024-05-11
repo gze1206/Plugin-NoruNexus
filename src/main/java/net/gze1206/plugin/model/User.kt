@@ -1,6 +1,8 @@
 package net.gze1206.plugin.model
 
 import net.gze1206.plugin.Main
+import net.gze1206.plugin.gui.ScoreboardBuilder
+import net.gze1206.plugin.utils.not
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
@@ -76,7 +78,9 @@ data class User (
         }
     }
 
-    fun update() : Boolean {
+    private val scoreboardBuilder = ScoreboardBuilder()
+
+    private fun update() : Boolean {
         var succeed = false
         Main.db.query("UPDATE Users SET Nickname = ?, Prefix = ?, Money = ? WHERE Id = ?") {
             it.setString(4, uuid.toString())
@@ -91,6 +95,30 @@ data class User (
         }
 
         return succeed
+    }
+
+    fun transaction(block: (User) -> Unit) : Boolean {
+        val nickname = nickname
+        val prefix = prefix
+        val money = money
+
+        block(this)
+
+        if (update()) return true
+
+        this.nickname = nickname
+        this.prefix = prefix
+        this.money = money
+        return false
+    }
+
+    fun updateScoreboard(player: Player) {
+        scoreboardBuilder.let {
+            it[1] = !"칭호 : ${if (prefix == null) "(없음)" else "[$prefix]"}"
+            it[2] = !"소지금 : ${money}원"
+
+            player.scoreboard = it.scoreboard()
+        }
     }
 
     fun getDisplayName() : Component {

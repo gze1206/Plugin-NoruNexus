@@ -9,6 +9,11 @@ permissions:
     default: op
 commands:
   money:
-    description: (WIP) 소지금 변경
+    description: 소지금 변경
     usage: "/<command> <username> <amount>"
     permission: plugin.admin
+  title:
+    description: 칭호 메뉴 열기
+    usage: "/<command>"
+    aliases:
+      - 칭호

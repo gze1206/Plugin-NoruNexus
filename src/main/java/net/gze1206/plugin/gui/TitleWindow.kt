@@ -1,21 +1,26 @@
 package net.gze1206.plugin.gui
 
 import net.gze1206.plugin.core.Constants
+import net.gze1206.plugin.core.UserManager
+import net.gze1206.plugin.model.Title
 import net.gze1206.plugin.utils.not
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import kotlin.math.ceil
 
 class TitleWindow(private val player: Player) : InventoryWindow {
     companion object {
         private const val COL_COUNT = 9
         private const val ROW_COUNT = 6
         private const val TOTAL_SIZE = COL_COUNT * ROW_COUNT
+        private const val ITEMS_PER_PAGE = COL_COUNT * (ROW_COUNT - 1)
 
         private const val BUTTON_FROM = COL_COUNT * (ROW_COUNT - 1)
         private const val PREV_BUTTON_AT = BUTTON_FROM + 3
@@ -40,15 +45,36 @@ class TitleWindow(private val player: Player) : InventoryWindow {
 
     fun update(page: Int = 1) {
         this.page = page
-        val maxPage = 3
+        val user = UserManager.getUser(player)
+        var titles : Collection<Title> = Title.getOwnTitles(user)
+        //NOTE: 칭호 수가 그렇게까지 많지는 않을 거라 다소 방만하게 작성합니다. 본래는 SQL 쿼리 자체에서 페이징한 뒤 가져오는 게 맞습니다.
+        val maxPage = ceil(titles.size / ITEMS_PER_PAGE.toDouble()).toInt()
+        titles = titles.drop(ITEMS_PER_PAGE * (page - 1)).take(ITEMS_PER_PAGE)
 
         if (page < 1 || maxPage < page)
             throw IndexOutOfBoundsException("올바르지 않은 칭호 페이지에 접근했습니다. [${page}]")
 
         repeat(TOTAL_SIZE) {
-            inventory.setItem(it, null)
+            if (titles.size <= it) {
+                inventory.setItem(it, null)
+                return@repeat
+            }
+
+            val title = titles[it]
+            val item = ItemStack(if (title.id == null) Material.BOOK else Material.KNOWLEDGE_BOOK, 1)
+            val meta = item.itemMeta
+            meta.displayName(Component.text(title.displayName, TextColor.fromHexString(title.color)))
+            meta.lore(listOf(!title.lore))
+            meta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
+            meta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, title.id ?: "")
+            item.itemMeta = meta
+            inventory.setItem(it, item)
         }
 
+        drawPagination(maxPage)
+    }
+
+    private fun drawPagination(maxPage: Int) {
         if (1 < page) {
             val prev = ItemStack(Material.ARROW, 1)
             val prevMeta = prev.itemMeta
@@ -81,8 +107,28 @@ class TitleWindow(private val player: Player) : InventoryWindow {
             PREV_BUTTON_UID -> update(page - 1)
             NEXT_BUTTON_UID -> update(page + 1)
             else -> {
+                if (buttonUid.isBlank()) {
+                    setTitle(null)
+                    return
+                }
 
+                setTitle(buttonUid)
             }
+        }
+    }
+
+    private fun setTitle(titleId: String?) {
+        val succeed = true == UserManager.getUser(player)?.transaction {
+            it.title = titleId
+        }
+
+        if (!succeed) return
+
+        UserManager.getUser(player).let {
+            val displayName = it!!.getDisplayName()
+            player.displayName(displayName)
+            player.playerListName(displayName)
+            it.updateScoreboard(player)
         }
     }
 }

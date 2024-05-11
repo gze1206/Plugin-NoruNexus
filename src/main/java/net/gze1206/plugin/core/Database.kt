@@ -1,6 +1,7 @@
 package net.gze1206.plugin.core
 
 import net.gze1206.plugin.Main
+import net.gze1206.plugin.model.Title
 import net.gze1206.plugin.model.User
 import java.io.File
 import java.sql.Connection
@@ -42,6 +43,7 @@ class Database {
     private fun createTables() {
         val conn = getConnection()
         User.createTable(conn)
+        Title.createTable(conn)
         conn.close()
     }
 

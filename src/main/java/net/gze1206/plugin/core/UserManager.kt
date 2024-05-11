@@ -1,25 +1,29 @@
 package net.gze1206.plugin.core
 
+import net.gze1206.plugin.model.Title
 import net.gze1206.plugin.model.User
 import org.bukkit.entity.Player
 
-class UserManager {
-    companion object {
-        fun addPlayer(player: Player) : User {
-            var user = User.get(player)
-            if (user == null) user = User.create(player)
-
-            player.displayName(user!!.getDisplayName())
-            user.updateScoreboard(player)
-
-            return user
+object UserManager {
+    fun addPlayer(player: Player) : User {
+        var user = User.get(player)
+        if (user == null) {
+            user = User.create(player)
+            Title.give(user!!, "test")
         }
 
-        fun getUser(player: Player) : User? {
-            var user = User.get(player)
-            if (user == null) user = User.create(player)
+        val displayName = user.getDisplayName()
+        player.displayName(displayName)
+        player.playerListName(displayName)
+        user.updateScoreboard(player)
 
-            return user
-        }
+        return user
+    }
+
+    fun getUser(player: Player) : User? {
+        var user = User.get(player)
+        if (user == null) user = User.create(player)
+
+        return user
     }
 }

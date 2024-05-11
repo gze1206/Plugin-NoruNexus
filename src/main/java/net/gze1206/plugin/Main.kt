@@ -1,6 +1,7 @@
 package net.gze1206.plugin
 
 import net.gze1206.plugin.core.CommandManager
+import net.gze1206.plugin.core.ConfigManager
 import net.gze1206.plugin.core.Database
 import net.gze1206.plugin.core.EventManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -18,6 +19,8 @@ class Main : JavaPlugin() {
         log = this.logger
         EventManager.register()
         CommandManager.register()
+        ConfigManager.init()
+        ConfigManager.saveAll()
         db.init()
         logger.info("플러그인 활성화!")
     }

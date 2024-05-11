@@ -5,14 +5,13 @@ import net.gze1206.plugin.utils.not
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
 import java.util.UUID
 
-open class ScoreboardBuilder {
+class ScoreboardBuilder {
     companion object {
         const val MAX_LINE = 16
     }
@@ -28,7 +27,7 @@ open class ScoreboardBuilder {
 
     private fun add(line: Component) : ScoreboardBuilder {
         if (MAX_LINE < lines.size) throw IndexOutOfBoundsException("16줄을 넘을 수 없습니다.")
-        val name = ChatColor.translateAlternateColorCodes('&', "&r".repeat(lines.size))
+        val name = "§r".repeat(lines.size)
         val team = scoreboard.getTeam(name) ?: scoreboard.registerNewTeam(name)
         team.suffix(line)
         team.addEntry(name)

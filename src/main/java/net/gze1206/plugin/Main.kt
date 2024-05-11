@@ -18,12 +18,11 @@ class Main : JavaPlugin() {
         log = this.logger
         EventManager.register()
         CommandManager.register()
-        db.connect()
+        db.init()
         logger.info("플러그인 활성화!")
     }
 
     override fun onDisable() {
-        db.close()
         logger.info("플러그인 비활성화")
     }
 }

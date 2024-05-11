@@ -2,10 +2,10 @@ package net.gze1206.plugin.model
 
 import net.gze1206.plugin.Main
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
+import java.sql.Connection
 import java.util.UUID
 
 data class User (
@@ -15,54 +15,82 @@ data class User (
     var money: Long,
 ) {
     companion object {
-        fun createTable() {
-            val conn = Main.db.getConnection()!!
+        fun createTable(conn: Connection) {
             val statement = conn.createStatement()
-            statement.execute("CREATE TABLE IF NOT EXISTS Users (Id TEXT PRIMARY KEY, Nickname TEXT, Prefix TEXT, Money INTEGER)")
+            statement.execute("""CREATE TABLE IF NOT EXISTS Users (
+                |    Id TEXT PRIMARY KEY,
+                |    Nickname TEXT,
+                |    Prefix TEXT,
+                |    Money INTEGER
+                |)""".trimMargin())
             statement.close()
         }
 
         fun create(player: Player) : User? {
-            val tempPrefix = "테스트"
-            val displayName = (player.displayName() as TextComponent).content()
-            val user = User(player.uniqueId, displayName, tempPrefix, 0L)
+            var user : User? = User(player.uniqueId, player.name, null, 0L)
 
-            val conn = Main.db.getConnection()!!
-            val statement = conn.prepareStatement("INSERT INTO Users (Id, Nickname, Prefix, Money) VALUES (?, ?, ?, ?)")
-            statement.setString(1, user.uuid.toString())
-            statement.setString(2, user.nickname)
-            statement.setString(3, user.prefix)
-            statement.setLong(4, user.money)
+            Main.db.query("INSERT INTO Users (Id, Nickname, Prefix, Money) VALUES (?, ?, ?, ?)") {
+                val uuid = user!!.uuid
+                val nickname = user!!.nickname
+                val prefix = user!!.prefix
+                val money = user!!.money
 
-            val effected = statement.executeUpdate()
+                it.setString(1, uuid.toString())
+                it.setString(2, nickname)
+                it.setString(3, prefix)
+                it.setLong(4, money)
 
-            if (effected <= 0) {
-                Main.log!!.severe("행이 추가되지 않았습니다. [${user.uuid},${user.nickname},${user.prefix},${user.money}]")
-                return null
+                val effected = it.executeUpdate()
+
+                if (effected <= 0) {
+                    Main.log!!.severe("행이 추가되지 않았습니다. [$uuid,$nickname,$prefix,$money]")
+                    user = null
+                    return@query false
+                }
+
+                return@query true
             }
 
-            statement.close()
             return user
         }
 
         fun get(player: Player) : User? {
-            val conn = Main.db.getConnection()!!
-            val statement = conn.prepareStatement("SELECT * FROM Users WHERE Id = ?")
-            statement.setString(1, player.uniqueId.toString())
+            var user : User? = null
+            Main.db.query("SELECT * FROM Users WHERE Id = ?") {
+                it.setString(1, player.uniqueId.toString())
 
-            val result = statement.executeQuery()
-            if (!result.next())
-                return null
+                val result = it.executeQuery()
+                if (!result.next())
+                    return@query true
 
-            val user = User(
-                UUID.fromString(result.getString(1)),
-                result.getString(2),
-                result.getString(3),
-                result.getLong(4))
+                user = User(
+                    UUID.fromString(result.getString(1)),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getLong(4))
 
-            statement.close()
+                return@query true
+            }
+
             return user
         }
+    }
+
+    fun update() : Boolean {
+        var succeed = false
+        Main.db.query("UPDATE Users SET Nickname = ?, Prefix = ?, Money = ? WHERE Id = ?") {
+            it.setString(4, uuid.toString())
+            it.setString(1, nickname)
+            it.setString(2, prefix)
+            it.setLong(3, money)
+
+            succeed = 0 < it.executeUpdate()
+            Main.log!!.info("유저 정보 갱신 ${if (succeed) "성공" else "실패"} [$uuid,$nickname,$prefix,$money]")
+
+            return@query true
+        }
+
+        return succeed
     }
 
     fun getDisplayName() : Component {
@@ -70,17 +98,5 @@ data class User (
         if (prefix == null) return nicknameComponent
         return Component.text("[$prefix] ").color(TextColor.color(0x13f832))
             .append(nicknameComponent)
-    }
-
-    fun update() : Boolean {
-        val conn = Main.db.getConnection()!!
-        val statement = conn.prepareStatement("UPDATE Users SET Nickname = ?, Prefix = ?, Money = ? WHERE Id = ?")
-        statement.setString(4, uuid.toString())
-        statement.setString(1, nickname)
-        statement.setString(2, prefix)
-        statement.setLong(3, money)
-
-        Main.log!!.info("유저 정보 갱신 [$uuid,$nickname,$prefix,$money]")
-        return 0 < statement.executeUpdate()
     }
 }

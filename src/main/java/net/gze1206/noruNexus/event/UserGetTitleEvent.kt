@@ -7,6 +7,7 @@ import net.gze1206.noruNexus.model.User
 import net.gze1206.noruNexus.utils.component
 import net.gze1206.noruNexus.utils.not
 import net.gze1206.noruNexus.utils.plus
+import net.kyori.adventure.text.event.HoverEvent
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
@@ -24,6 +25,7 @@ class UserGetTitleEvent(val sender: User, val title: Title, isAsync: Boolean) : 
         fun onUserGetTitleEvent(e: UserGetTitleEvent) {
             val player = Main.getInstance().server.getPlayer(e.sender.uuid) ?: return
             val titleComponent = "[${e.title.displayName}]".component(e.title.rarity.color)
+                .hoverEvent(HoverEvent.showText(!e.title.lore))
 
             if (e.title.globalBroadcast) {
                 Main.getInstance().server.sendMessage(

@@ -21,11 +21,11 @@ data class Title(
     }
 
     enum class TitleId(val key: String, val displayName: String, val lore: String, val rarity: Rarity, val globalBroadcast: Boolean) {
-        RICH("0-rich", "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Rare, true),
-        RIICH("1-riich", "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
-        RIIICH("2-riiich", "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Legendary, true),
+        RICH("000-rich", "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Rare, true),
+        RIICH("001-riich", "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
+        RIIICH("002-riiich", "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Legendary, true),
 
-        HELLDIVER("3-helldiver", "헬다이버", "네더에 진입한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
+        HELLDIVER("003-helldiver", "헬다이버", "네더에 진입한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
 
         TEST("999-test", "테스트", "테스트를 위한 칭호입니다.", Rarity.Normal, false);
 

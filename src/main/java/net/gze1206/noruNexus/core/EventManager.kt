@@ -15,6 +15,7 @@ object EventManager {
                 registerEvents(PlayerJoinEvent)
                 registerEvents(PlayerInteractEvent)
                 registerEvents(PlayerInteractEntityEvent)
+                registerEvents(PlayerTeleportEvent)
                 registerEvents(InventoryClickEvent)
                 registerEvents(UserMoneyUpdateEvent)
                 registerEvents(UserGetTitleEvent)

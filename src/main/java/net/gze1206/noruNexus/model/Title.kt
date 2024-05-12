@@ -4,7 +4,6 @@ import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.core.ConfigManager
 import net.gze1206.noruNexus.core.Database
 import net.gze1206.noruNexus.event.UserGetTitleEvent
-import org.bukkit.configuration.file.FileConfiguration
 import java.sql.Connection
 
 data class Title(
@@ -21,32 +20,29 @@ data class Title(
         Legendary(4, "#eec00b")
     }
 
-    enum class TitleId(val key: String) {
-        RICH("0-rich"),
-        RIICH("1-riich"),
-        RIIICH("2-riiich"),
+    enum class TitleId(val key: String, val displayName: String, val lore: String, val rarity: Rarity, val globalBroadcast: Boolean) {
+        RICH("0-rich", "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Rare, true),
+        RIICH("1-riich", "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
+        RIIICH("2-riiich", "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Legendary, true),
 
-        TEST("999-test");
+        HELLDIVER("3-helldiver", "헬다이버", "네더에 진입한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
+
+        TEST("999-test", "테스트", "테스트를 위한 칭호입니다.", Rarity.Normal, false);
 
         override fun toString() : String = this.key
     }
 
     companion object {
         fun initConfig() {
-            fun FileConfiguration.addTitle(id: TitleId, displayName: String, lore: String, rarity: Rarity, globalBroadcast: Boolean = false) {
-                addDefault("titles.${id}.displayName", displayName)
-                addDefault("titles.${id}.lore", lore)
-                addDefault("titles.${id}.rarity", rarity.name)
-                addDefault("titles.${id}.globalBroadcast", globalBroadcast)
-            }
-
             ConfigManager.title.getConfig().run {
                 options().copyDefaults(true)
 
-                addTitle(TitleId.TEST, "테스트", "테스트를 위한 칭호입니다.", Rarity.Normal)
-                addTitle(TitleId.RICH, "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Rare, true)
-                addTitle(TitleId.RIICH, "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true)
-                addTitle(TitleId.RIIICH, "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Legendary, true)
+                TitleId.entries.sortedBy { it.key }.forEach {
+                    addDefault("titles.${it}.displayName", it.displayName)
+                    addDefault("titles.${it}.lore", it.lore)
+                    addDefault("titles.${it}.rarity", it.rarity.name)
+                    addDefault("titles.${it}.globalBroadcast", it.globalBroadcast)
+                }
             }
         }
 

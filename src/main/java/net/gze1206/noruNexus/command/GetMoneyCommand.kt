@@ -1,6 +1,8 @@
 package net.gze1206.noruNexus.command
 
+import net.gze1206.noruNexus.core.Constants.ITEM_TYPE_KEY
 import net.gze1206.noruNexus.core.Constants.MONEY_UNIT_KEY
+import net.gze1206.noruNexus.core.ItemType
 import net.gze1206.noruNexus.core.UserManager
 import net.gze1206.noruNexus.utils.not
 import net.gze1206.noruNexus.utils.updateScoreboard
@@ -56,6 +58,7 @@ object GetMoneyCommand : TabExecutor {
             val itemMeta = item.itemMeta
             itemMeta.setCustomModelData(1)
             itemMeta.displayName(!"${UNIT}원")
+            itemMeta.persistentDataContainer.set(ITEM_TYPE_KEY, PersistentDataType.STRING, ItemType.MONEY.name)
             itemMeta.persistentDataContainer.set(MONEY_UNIT_KEY, PersistentDataType.INTEGER, UNIT)
             item.itemMeta = itemMeta
             player.inventory.addItem(item)

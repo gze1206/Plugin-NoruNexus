@@ -13,10 +13,11 @@ object EventManager {
                 }
 
                 registerEvents(PlayerJoinEvent)
+                registerEvents(PlayerInteractEvent)
+                registerEvents(PlayerInteractEntityEvent)
                 registerEvents(InventoryClickEvent)
                 registerEvents(UserMoneyUpdateEvent)
                 registerEvents(UserGetTitleEvent)
-                registerEvents(PlayerInteractEntityEvent)
             }
         }
     }

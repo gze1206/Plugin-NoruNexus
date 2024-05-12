@@ -11,9 +11,9 @@ import org.bukkit.entity.Player
 object UserMoneyCommand : TabExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>) : Boolean {
         if (sender !is Player) {
-            sender.sendMessage("플레이어만 사용 가능한 명령어입니다.")
             return false
         }
+
         if (args.size != 2) {
             sender.sendMessage("올바른 명령어 사용법이 아닙니다.")
             return false

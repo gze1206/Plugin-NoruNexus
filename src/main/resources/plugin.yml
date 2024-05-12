@@ -10,11 +10,11 @@ permissions:
   plugin.admin:
     default: op
 commands:
-  money:
+  set-money:
     description: 소지금 변경
     usage: "/<command> <username> <amount>"
     permission: plugin.admin
-  reload-config:
+  nnreload:
     description: 플러그인 설정 리로드
     usage: "/<command>"
     permission: plugin.admin
@@ -23,3 +23,6 @@ commands:
     usage: "/<command>"
     aliases:
       - 칭호
+  출금:
+    description: 소지금을 아이템 형태로 꺼냅니다
+    usage: "/<command> <amount>"

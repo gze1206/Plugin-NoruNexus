@@ -9,5 +9,6 @@ object Constants {
     val SYSTEM_MESSAGE_COMPONENT = Component.text("[시스템] ", NamedTextColor.YELLOW)
     val GUI_UID_KEY = NamespacedKey(Main.getInstance(), "gui-uid")
     val BUTTON_UID_KEY = NamespacedKey(Main.getInstance(), "gui-button-uid")
+    val MONEY_UNIT_KEY = NamespacedKey(Main.getInstance(), "money-unit")
     const val TEST_TITLE_ID = "999-test"
 }

@@ -8,7 +8,6 @@ import net.gze1206.noruNexus.utils.component
 import net.gze1206.noruNexus.utils.not
 import net.gze1206.noruNexus.utils.plus
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
 import java.sql.Connection
 import java.util.UUID
@@ -128,6 +127,6 @@ data class User (
         val title = Title.get(title!!)
         val displayPrefix = title?.displayName ?: this.title
         val color = (title?.rarity ?: Title.Rarity.Normal).color
-        return "[$displayPrefix] ".component(TextColor.fromHexString(color)) + nicknameComponent
+        return "[$displayPrefix] ".component(color) + nicknameComponent
     }
 }

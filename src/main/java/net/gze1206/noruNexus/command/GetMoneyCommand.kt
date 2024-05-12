@@ -1,22 +1,14 @@
 package net.gze1206.noruNexus.command
 
-import net.gze1206.noruNexus.core.Constants.ITEM_TYPE_KEY
-import net.gze1206.noruNexus.core.Constants.MONEY_UNIT_KEY
-import net.gze1206.noruNexus.core.ItemType
+import net.gze1206.noruNexus.core.ItemManager
 import net.gze1206.noruNexus.core.UserManager
-import net.gze1206.noruNexus.utils.not
 import net.gze1206.noruNexus.utils.updateScoreboard
-import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
 
 object GetMoneyCommand : TabExecutor {
-    private const val UNIT = 100
-
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>) : Boolean {
         if (sender !is Player){
             return false
@@ -31,9 +23,6 @@ object GetMoneyCommand : TabExecutor {
         if (amount == null) {
             sender.sendMessage("올바른 값이 아닙니다.")
             return false
-        }
-        if (0 < amount % UNIT) {
-            sender.sendMessage("출금은 $UNIT 단위로만 할 수 있습니다.")
         }
 
         val player = sender.player!!
@@ -54,13 +43,7 @@ object GetMoneyCommand : TabExecutor {
         UserManager.getUser(player).run {
             player.updateScoreboard(this)
 
-            val item = ItemStack(Material.GOLD_NUGGET, (amount / UNIT).toInt())
-            val itemMeta = item.itemMeta
-            itemMeta.setCustomModelData(1)
-            itemMeta.displayName(!"${UNIT}원")
-            itemMeta.persistentDataContainer.set(ITEM_TYPE_KEY, PersistentDataType.STRING, ItemType.MONEY.name)
-            itemMeta.persistentDataContainer.set(MONEY_UNIT_KEY, PersistentDataType.INTEGER, UNIT)
-            item.itemMeta = itemMeta
+            val item = ItemManager.createMoney(amount)
             player.inventory.addItem(item)
         }
 

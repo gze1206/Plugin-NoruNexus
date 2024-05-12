@@ -10,6 +10,7 @@ fun String.component(color: TextColor? = NamedTextColor.WHITE) = Component.text(
     .decoration(TextDecoration.ITALIC, false)
     .color(color)
     .build()
+fun String.component(color: String) = this.component(TextColor.fromHexString(color))
 val String.component : Component
     get() = component()
 operator fun String.not() = component

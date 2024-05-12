@@ -11,5 +11,5 @@ object Constants {
     val GUI_UID_KEY = NamespacedKey(Main.getInstance(), "gui-uid")
     val BUTTON_UID_KEY = NamespacedKey(Main.getInstance(), "gui-button-uid")
     val ITEM_TYPE_KEY = NamespacedKey(Main.getInstance(), "item-type")
-    val MONEY_UNIT_KEY = NamespacedKey(Main.getInstance(), "money-unit")
+    val MONEY_AMOUNT_KEY = NamespacedKey(Main.getInstance(), "money-amount")
 }

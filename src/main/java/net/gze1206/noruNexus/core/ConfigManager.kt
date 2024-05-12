@@ -2,7 +2,6 @@ package net.gze1206.noruNexus.core
 
 import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.config.ConfigFile
-import net.gze1206.noruNexus.event.UserMoneyUpdateEvent
 import net.gze1206.noruNexus.model.Title
 import org.bukkit.configuration.file.FileConfiguration
 
@@ -16,9 +15,9 @@ object ConfigManager {
         config.run {
             options().copyDefaults(true)
 
-            addDefault("title-trigger.${UserMoneyUpdateEvent.RICH}", 100)
-            addDefault("title-trigger.${UserMoneyUpdateEvent.RIICH}", 10000)
-            addDefault("title-trigger.${UserMoneyUpdateEvent.RIIICH}", 1000000)
+            addDefault("title-trigger.${Title.TitleId.RICH}", 100)
+            addDefault("title-trigger.${Title.TitleId.RIICH}", 10000)
+            addDefault("title-trigger.${Title.TitleId.RIIICH}", 1000000)
         }
 
         Title.initConfig()

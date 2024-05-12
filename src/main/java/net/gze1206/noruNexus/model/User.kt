@@ -4,9 +4,10 @@ import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.core.Database
 import net.gze1206.noruNexus.event.UserMoneyUpdateEvent
 import net.gze1206.noruNexus.gui.ScoreboardBuilder
+import net.gze1206.noruNexus.utils.component
+import net.gze1206.noruNexus.utils.not
 import net.gze1206.noruNexus.utils.plus
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
 import java.sql.Connection
@@ -121,12 +122,12 @@ data class User (
     }
 
     fun getDisplayName() : Component {
-        val nicknameComponent = Component.text(nickname, NamedTextColor.WHITE)
+        val nicknameComponent = !nickname
         if (title == null) return nicknameComponent
 
         val title = Title.get(title!!)
         val displayPrefix = title?.displayName ?: this.title
         val color = (title?.rarity ?: Title.Rarity.Normal).color
-        return Component.text("[$displayPrefix] ", TextColor.fromHexString(color)) + nicknameComponent
+        return "[$displayPrefix] ".component(TextColor.fromHexString(color)) + nicknameComponent
     }
 }

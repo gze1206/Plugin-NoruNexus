@@ -2,10 +2,8 @@ package net.gze1206.noruNexus.model
 
 import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.core.ConfigManager
-import net.gze1206.noruNexus.core.Constants.TEST_TITLE_ID
 import net.gze1206.noruNexus.core.Database
 import net.gze1206.noruNexus.event.UserGetTitleEvent
-import net.gze1206.noruNexus.event.UserMoneyUpdateEvent
 import org.bukkit.configuration.file.FileConfiguration
 import java.sql.Connection
 
@@ -16,16 +14,26 @@ data class Title(
     val lore: String,
     val globalBroadcast : Boolean
 ) {
-    enum class Rarity(val customModelId: Int, val color: String) {
+    enum class Rarity(@Suppress("unused") val customModelId: Int, val color: String) {
         Normal(1, "#ffffff"),
         Rare(2, "#16f0f1"),
         Epic(3, "#da0bee"),
         Legendary(4, "#eec00b")
     }
 
+    enum class TitleId(val key: String) {
+        RICH("0-rich"),
+        RIICH("1-riich"),
+        RIIICH("2-riiich"),
+
+        TEST("999-test");
+
+        override fun toString() : String = this.key
+    }
+
     companion object {
         fun initConfig() {
-            fun FileConfiguration.addTitle(id: String, displayName: String, lore: String, rarity: Rarity, globalBroadcast: Boolean = false) {
+            fun FileConfiguration.addTitle(id: TitleId, displayName: String, lore: String, rarity: Rarity, globalBroadcast: Boolean = false) {
                 addDefault("titles.${id}.displayName", displayName)
                 addDefault("titles.${id}.lore", lore)
                 addDefault("titles.${id}.rarity", rarity.name)
@@ -35,10 +43,10 @@ data class Title(
             ConfigManager.title.getConfig().run {
                 options().copyDefaults(true)
 
-                addTitle(TEST_TITLE_ID, "테스트", "테스트를 위한 칭호입니다.", Rarity.Normal)
-                addTitle(UserMoneyUpdateEvent.RICH, "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Rare, true)
-                addTitle(UserMoneyUpdateEvent.RIICH, "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true)
-                addTitle(UserMoneyUpdateEvent.RIIICH, "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Legendary, true)
+                addTitle(TitleId.TEST, "테스트", "테스트를 위한 칭호입니다.", Rarity.Normal)
+                addTitle(TitleId.RICH, "부자", "꽤 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Rare, true)
+                addTitle(TitleId.RIICH, "부우자", "상당히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true)
+                addTitle(TitleId.RIIICH, "부우우자", "굉장히 많은 부를 축적한 사람에게 주어지는 칭호입니다.", Rarity.Legendary, true)
             }
         }
 
@@ -66,19 +74,19 @@ data class Title(
             )
         }
 
-        fun give(user: User, titleId: String) : Boolean {
-            val title = get(titleId) ?: return false
+        fun give(user: User, titleId: TitleId) : Boolean {
+            val title = get(titleId.key) ?: return false
 
             val succeed = Database.query("SELECT * FROM UserTitles WHERE UserId = ? and TitleId = ?") {
                 setString(1, user.uuid.toString())
-                setString(2, titleId)
+                setString(2, titleId.key)
 
                 val result = executeQuery()
                 if (result.next()) return@query false
 
                 connection.prepareStatement("INSERT INTO UserTitles (UserId, TitleId) VALUES (?, ?)").run {
                     setString(1, user.uuid.toString())
-                    setString(2, titleId)
+                    setString(2, titleId.key)
 
                     val effected = executeUpdate()
                     if (effected < 1) {

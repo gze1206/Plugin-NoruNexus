@@ -1,6 +1,7 @@
 package net.gze1206.noruNexus.gui
 
 import io.papermc.paper.scoreboard.numbers.NumberFormat
+import net.gze1206.noruNexus.core.Constants.RESET_CHARACTER
 import net.gze1206.noruNexus.utils.not
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -27,7 +28,7 @@ class ScoreboardBuilder {
     private fun add(line: Component) : ScoreboardBuilder {
         if (MAX_LINE < lines.size) throw IndexOutOfBoundsException("16줄을 넘을 수 없습니다.")
 
-        val name = "§f".repeat(lines.size)
+        val name = RESET_CHARACTER.repeat(lines.size)
         val team = scoreboard.getTeam(name) ?: scoreboard.registerNewTeam(name)
         team.suffix(line)
         team.addEntry(name)

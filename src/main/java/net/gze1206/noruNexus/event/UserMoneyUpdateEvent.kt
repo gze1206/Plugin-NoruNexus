@@ -10,10 +10,6 @@ import org.bukkit.event.Listener
 
 class UserMoneyUpdateEvent(val sender: User, val money: Long, isAsync: Boolean) : Event(isAsync) {
     companion object : Listener {
-        const val RICH = "0-rich"
-        const val RIICH = "1-riich"
-        const val RIIICH = "2-riiich"
-
         private val handlerList = HandlerList()
 
         @Suppress("unused")
@@ -24,12 +20,12 @@ class UserMoneyUpdateEvent(val sender: User, val money: Long, isAsync: Boolean) 
         fun onUserMoneyUpdateEvent(e: UserMoneyUpdateEvent) {
             val config = ConfigManager.config
 
-            if (e.money >= config.getLong("title-trigger.$RICH"))
-                Title.give(e.sender, RICH)
-            if (e.money >= config.getLong("title-trigger.$RIICH"))
-                Title.give(e.sender, RIICH)
-            if (e.money >= config.getLong("title-trigger.$RIIICH"))
-                Title.give(e.sender, RIIICH)
+            if (e.money >= config.getLong("title-trigger.${Title.TitleId.RICH}"))
+                Title.give(e.sender, Title.TitleId.RICH)
+            if (e.money >= config.getLong("title-trigger.${Title.TitleId.RICH}"))
+                Title.give(e.sender, Title.TitleId.RIICH)
+            if (e.money >= config.getLong("title-trigger.${Title.TitleId.RIIICH}"))
+                Title.give(e.sender, Title.TitleId.RIIICH)
         }
 
     }

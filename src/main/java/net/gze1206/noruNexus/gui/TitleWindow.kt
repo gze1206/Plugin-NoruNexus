@@ -3,9 +3,9 @@ package net.gze1206.noruNexus.gui
 import net.gze1206.noruNexus.core.Constants
 import net.gze1206.noruNexus.core.UserManager
 import net.gze1206.noruNexus.model.Title
+import net.gze1206.noruNexus.utils.component
 import net.gze1206.noruNexus.utils.not
 import net.gze1206.noruNexus.utils.updateScoreboard
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
@@ -31,7 +31,9 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         private const val PREV_BUTTON_UID = "PREV"
         private const val NEXT_BUTTON_UID = "NEXT"
 
-        private val windowTitle = Component.text("칭호", NamedTextColor.DARK_AQUA)
+        private val windowTitle = "칭호".component(NamedTextColor.DARK_AQUA)
+        private val prevPageComponent = !"이전 페이지"
+        private val nextPageComponent = !"다음 페이지"
     }
 
     private val inventory : Inventory = Bukkit.createInventory(null, TOTAL_SIZE, windowTitle)
@@ -64,7 +66,7 @@ class TitleWindow(private val player: Player) : InventoryWindow {
             val title = titles[it]
             val item = ItemStack(if (title.id == null) Material.BARRIER else Material.NAME_TAG, 1)
             val meta = item.itemMeta
-            meta.displayName(Component.text(title.displayName, TextColor.fromHexString(title.rarity.color)))
+            meta.displayName(title.displayName.component(TextColor.fromHexString(title.rarity.color)))
             meta.lore(listOf(!title.lore))
             meta.setCustomModelData(title.rarity.customModelId)
             meta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
@@ -80,7 +82,7 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         if (1 < page) {
             val prev = ItemStack(Material.ARROW, 1)
             val prevMeta = prev.itemMeta
-            prevMeta.displayName(!"이전 페이지")
+            prevMeta.displayName(prevPageComponent)
             prevMeta.setCustomModelData(1)
             prevMeta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
             prevMeta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, PREV_BUTTON_UID)
@@ -97,7 +99,7 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         if (page < maxPage) {
             val next = ItemStack(Material.ARROW, 1)
             val nextMeta = next.itemMeta
-            nextMeta.displayName(!"다음 페이지")
+            nextMeta.displayName(nextPageComponent)
             nextMeta.setCustomModelData(2)
             nextMeta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
             nextMeta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, NEXT_BUTTON_UID)

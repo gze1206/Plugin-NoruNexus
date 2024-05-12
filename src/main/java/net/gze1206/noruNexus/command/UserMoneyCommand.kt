@@ -4,18 +4,17 @@ import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.core.UserManager
 import net.gze1206.noruNexus.utils.updateScoreboard
 import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 
-object UserMoneyCommand : CommandExecutor, TabExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?) : Boolean {
+object UserMoneyCommand : TabExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>) : Boolean {
         if (sender !is Player) {
             sender.sendMessage("플레이어만 사용 가능한 명령어입니다.")
             return false
         }
-        if (args?.size != 2) {
+        if (args.size != 2) {
             sender.sendMessage("올바른 명령어 사용법이 아닙니다.")
             return false
         }
@@ -49,9 +48,9 @@ object UserMoneyCommand : CommandExecutor, TabExecutor {
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>?) : MutableList<String>? {
+    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>) : MutableList<String>? {
         // 첫 번째 매개 변수는 유저 이름
-        if (args == null || args.size < 2) return null
+        if (args.size < 2) return null
 
         // 두 번째는 숫자니까 자동 완성 없음
         return mutableListOf()

@@ -1,7 +1,6 @@
 package net.gze1206.noruNexus.config
 
 import net.gze1206.noruNexus.core.RuneType
-import org.bukkit.entity.EntityType
 import java.security.InvalidParameterException
 
 data class RuneConfig(val path: String, val fileName: String) {
@@ -34,8 +33,6 @@ data class RuneConfig(val path: String, val fileName: String) {
             addDefault("${PROGRESS_ON_MINING_KEY}.$DEFAULT_KEY", 0.015)
             addDefault("${EMPTY_RUNE_DROPS_KEY}.${DEFAULT_KEY}.$RATE_KEY", 50)
             addDefault("${EMPTY_RUNE_DROPS_KEY}.${DEFAULT_KEY}.$AMOUNT_KEY", 1)
-            addDefault("${EMPTY_RUNE_DROPS_KEY}.${EntityType.ENDER_DRAGON}.rate", 100)
-            addDefault("${EMPTY_RUNE_DROPS_KEY}.${EntityType.ENDER_DRAGON}.amount", 10)
 
             RuneType.entries.forEach {
                 addDefault("${PARAMS_KEY}.${it.name}", it.defaultParams)
@@ -113,7 +110,8 @@ data class RuneConfig(val path: String, val fileName: String) {
             }
 
             RuneType.entries.forEach {
-                runeParameters[it] = getIntegerList("${PARAMS_KEY}.${it.name}").toTypedArray()
+                val array = getIntegerList("${PARAMS_KEY}.${it.name}").toTypedArray()
+                runeParameters[it] = if (array.isEmpty()) it.defaultParams else array
 
                 if (runeParameters[it]!!.size != it.defaultParams.size) {
                     throw InvalidParameterException("${it.displayName} 룬의 매개변수 설정에 이상이 있습니다.")

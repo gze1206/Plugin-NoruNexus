@@ -2,14 +2,15 @@ package net.gze1206.noruNexus.core
 
 import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.config.ConfigFile
+import net.gze1206.noruNexus.config.RuneConfig
 import net.gze1206.noruNexus.model.Title
-import org.bukkit.configuration.file.FileConfiguration
 
 object ConfigManager {
     private val PATH = Main.getInstance().dataFolder.absolutePath
 
-    val config : FileConfiguration = Main.getInstance().config
-    val title : ConfigFile = ConfigFile(PATH, "title.yml")
+    val config = Main.getInstance().config
+    val title = ConfigFile(PATH, "title.yml")
+    val rune = RuneConfig(PATH, "rune.yml")
 
     fun init() {
         config.run {
@@ -21,15 +22,18 @@ object ConfigManager {
         }
 
         Title.initConfig()
+        rune.init()
     }
 
     fun reloadAll() {
         Main.getInstance().reloadConfig()
         title.reload()
+        rune.reload()
     }
 
     fun saveAll() {
         Main.getInstance().saveConfig()
         title.save()
+        rune.save()
     }
 }

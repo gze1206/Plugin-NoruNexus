@@ -12,9 +12,11 @@ object EventManager {
                     it.registerEvents(listener, this)
                 }
 
-                registerEvents(PlayerJoinEvent)
+                registerEvents(BlockBreakEvent)
+                registerEvents(EntityDeathEvent)
                 registerEvents(PlayerInteractEvent)
                 registerEvents(PlayerInteractEntityEvent)
+                registerEvents(PlayerJoinEvent)
                 registerEvents(PlayerTeleportEvent)
                 registerEvents(InventoryClickEvent)
                 registerEvents(UserMoneyUpdateEvent)

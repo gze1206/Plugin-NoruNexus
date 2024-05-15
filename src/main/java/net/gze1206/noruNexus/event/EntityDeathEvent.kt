@@ -42,7 +42,7 @@ object EntityDeathEvent : Listener {
         val progression = ConfigManager.rune.getProgressOnKillMonster(monsterName)
 
         player.inventory.forEach {
-            if (!it.isTypeOf(ItemType.RUNE)) {
+            if (it == null || !it.isTypeOf(ItemType.RUNE)) {
                 return@forEach
             }
 

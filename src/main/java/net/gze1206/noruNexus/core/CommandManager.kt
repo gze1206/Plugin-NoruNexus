@@ -1,10 +1,7 @@
 package net.gze1206.noruNexus.core
 
 import net.gze1206.noruNexus.Main
-import net.gze1206.noruNexus.command.GetMoneyCommand
-import net.gze1206.noruNexus.command.ReloadCommand
-import net.gze1206.noruNexus.command.TitleCommand
-import net.gze1206.noruNexus.command.UserMoneyCommand
+import net.gze1206.noruNexus.command.*
 import org.bukkit.command.CommandExecutor
 
 object CommandManager {
@@ -19,6 +16,7 @@ object CommandManager {
                 setPluginExecutor("nnreload", ReloadCommand)
                 setPluginExecutor("title", TitleCommand)
                 setPluginExecutor("출금", GetMoneyCommand)
+                setPluginExecutor("상점", GlobalShopCommand)
             }
         }
     }

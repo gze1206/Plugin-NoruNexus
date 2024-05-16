@@ -7,8 +7,6 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.DisplaySlot
-import org.bukkit.scoreboard.Objective
-import org.bukkit.scoreboard.Scoreboard
 import java.util.UUID
 
 class ScoreboardBuilder {
@@ -19,8 +17,8 @@ class ScoreboardBuilder {
     private val name = UUID.randomUUID().toString().replace("-", "")
     private val title : Component = !"INFO"
     private val lines = arrayListOf<String>()
-    private val scoreboard : Scoreboard = Bukkit.getScoreboardManager().newScoreboard
-    private val objective : Objective = scoreboard.registerNewObjective(name, Criteria.DUMMY, title).apply {
+    private val scoreboard = Bukkit.getScoreboardManager().newScoreboard
+    private val objective = scoreboard.registerNewObjective(name, Criteria.DUMMY, title).apply {
         displaySlot = DisplaySlot.SIDEBAR
         numberFormat(NumberFormat.blank())
     }

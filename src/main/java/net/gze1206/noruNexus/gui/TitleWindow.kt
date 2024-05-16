@@ -2,6 +2,8 @@ package net.gze1206.noruNexus.gui
 
 import net.gze1206.noruNexus.core.Constants
 import net.gze1206.noruNexus.core.UserManager
+import net.gze1206.noruNexus.gui.InventoryWindow.Companion.NEXT_BUTTON_UID
+import net.gze1206.noruNexus.gui.InventoryWindow.Companion.PREV_BUTTON_UID
 import net.gze1206.noruNexus.model.Title
 import net.gze1206.noruNexus.utils.component
 import net.gze1206.noruNexus.utils.not
@@ -11,7 +13,6 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.ceil
@@ -28,18 +29,14 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         private const val PAGE_AT = BUTTON_FROM + 4
         private const val NEXT_BUTTON_AT = BUTTON_FROM + 5
 
-        private const val PREV_BUTTON_UID = "PREV"
-        private const val NEXT_BUTTON_UID = "NEXT"
-
         private val windowTitle = "칭호".component(NamedTextColor.DARK_AQUA)
-        private val prevPageComponent = !"이전 페이지"
-        private val nextPageComponent = !"다음 페이지"
     }
 
-    private val inventory : Inventory = Bukkit.createInventory(null, TOTAL_SIZE, windowTitle)
+    private val inventory = Bukkit.createInventory(null, TOTAL_SIZE, windowTitle)
     override fun inventory() = inventory
 
-    private var page : Int = 1
+    private var page = 1
+    override fun page() = page
 
     fun open() {
         InventoryWindow.inventoryGuiMap[player.uniqueId] = this
@@ -54,8 +51,9 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         val maxPage = ceil(titles.size / ITEMS_PER_PAGE.toDouble()).toInt()
         titles = titles.drop(ITEMS_PER_PAGE * (page - 1)).take(ITEMS_PER_PAGE)
 
-        if (page < 1 || maxPage < page)
+        if (page < 1 || maxPage < page) {
             throw IndexOutOfBoundsException("올바르지 않은 칭호 페이지에 접근했습니다. [${page}]")
+        }
 
         repeat(TOTAL_SIZE) {
             if (titles.size <= it) {
@@ -79,33 +77,7 @@ class TitleWindow(private val player: Player) : InventoryWindow {
     }
 
     private fun drawPagination(maxPage: Int) {
-        if (1 < page) {
-            val prev = ItemStack(Material.ARROW, 1)
-            val prevMeta = prev.itemMeta
-            prevMeta.displayName(prevPageComponent)
-            prevMeta.setCustomModelData(1)
-            prevMeta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
-            prevMeta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, PREV_BUTTON_UID)
-            prev.itemMeta = prevMeta
-            inventory.setItem(PREV_BUTTON_AT, prev)
-        }
-
-        val pageIndicator = ItemStack(Material.PAPER, 1)
-        val pageMeta = pageIndicator.itemMeta
-        pageMeta.displayName(!"페이지 $page / $maxPage")
-        pageIndicator.itemMeta = pageMeta
-        inventory.setItem(PAGE_AT, pageIndicator)
-
-        if (page < maxPage) {
-            val next = ItemStack(Material.ARROW, 1)
-            val nextMeta = next.itemMeta
-            nextMeta.displayName(nextPageComponent)
-            nextMeta.setCustomModelData(2)
-            nextMeta.persistentDataContainer.set(Constants.GUI_UID_KEY, PersistentDataType.INTEGER, GuiType.TITLE.ordinal)
-            nextMeta.persistentDataContainer.set(Constants.BUTTON_UID_KEY, PersistentDataType.STRING, NEXT_BUTTON_UID)
-            next.itemMeta = nextMeta
-            inventory.setItem(NEXT_BUTTON_AT, next)
-        }
+        drawPagination(GuiType.TITLE, PREV_BUTTON_AT, PAGE_AT, NEXT_BUTTON_AT, maxPage)
     }
 
     override fun onClick(buttonUid: String, item: ItemStack) {

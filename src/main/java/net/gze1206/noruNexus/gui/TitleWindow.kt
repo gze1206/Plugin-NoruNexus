@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.ceil
@@ -80,12 +81,14 @@ class TitleWindow(private val player: Player) : InventoryWindow {
         drawPagination(GuiType.TITLE, PREV_BUTTON_AT, PAGE_AT, NEXT_BUTTON_AT, maxPage)
     }
 
-    override fun onClick(buttonUid: String, item: ItemStack) {
+    override fun onClick(buttonUid: String, item: ItemStack, clickType: ClickType) : Boolean {
         when (buttonUid) {
             PREV_BUTTON_UID -> update(page - 1)
             NEXT_BUTTON_UID -> update(page + 1)
             else -> setTitle(buttonUid.ifBlank { null })
         }
+
+        return true
     }
 
     private fun setTitle(titleId: String?) {

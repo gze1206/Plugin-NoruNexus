@@ -3,6 +3,7 @@ package net.gze1206.noruNexus.gui
 import net.gze1206.noruNexus.core.Constants
 import net.gze1206.noruNexus.utils.not
 import org.bukkit.Material
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -22,7 +23,7 @@ interface InventoryWindow {
     fun inventory() : Inventory
     fun page() : Int
 
-    fun onClick(buttonUid: String, item: ItemStack)
+    fun onClick(buttonUid: String, item: ItemStack, clickType: ClickType) : Boolean
 
     fun drawPagination(guiType: GuiType, prevButtonAt: Int, pageAt: Int, nextButtonAt: Int, maxPage: Int) {
         val page = page()

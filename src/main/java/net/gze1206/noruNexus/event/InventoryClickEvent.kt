@@ -24,7 +24,7 @@ object InventoryClickEvent : Listener {
         if (guiType < 0) return
 
         val buttonUid = itemMeta.persistentDataContainer.get(BUTTON_UID_KEY, PersistentDataType.STRING)!!
-        inventoryWindow.onClick(buttonUid, item)
+        e.isCancelled = inventoryWindow.onClick(buttonUid, item, e.click)
     }
 
 }

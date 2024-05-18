@@ -1,10 +1,9 @@
 package net.gze1206.noruNexus.gui
 
-import net.gze1206.noruNexus.core.Constants
-import net.gze1206.noruNexus.core.ItemManager
+import net.gze1206.noruNexus.core.*
 import net.gze1206.noruNexus.gui.InventoryWindow.Companion.NEXT_BUTTON_UID
 import net.gze1206.noruNexus.gui.InventoryWindow.Companion.PREV_BUTTON_UID
-import net.gze1206.noruNexus.utils.component
+import net.gze1206.noruNexus.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
@@ -45,16 +44,17 @@ class ShopWindow(private val player: Player) : InventoryWindow {
             return key.startsWith(CUSTOM_ITEM_KEY)
         }
 
-        fun toItemStack() : ItemStack {
+        fun toItemStack(amount: Int = 1) : ItemStack {
             if (isCustomItem()) {
                 return when (key.substring(CUSTOM_ITEM_KEY.length)) {
-                    "recall_scroll" -> ItemManager.createRecallScroll(1)
+                    "recall_scroll" -> ItemManager.createRecallScroll(amount)
+                    "rune" -> ItemManager.createRune(RuneType.EMPTY)
 
                     else -> throw NotImplementedError()
                 }
             }
 
-            return ItemStack(Material.matchMaterial(key)!!, 1)
+            return ItemStack(Material.matchMaterial(key)!!, amount)
         }
     }
 
@@ -107,15 +107,16 @@ class ShopWindow(private val player: Player) : InventoryWindow {
 
     private fun productToLore(originalLore: List<Component>?, maxStackSize: Int, product: ShopProduct) : MutableList<Component> {
         val lore = originalLore?.toMutableList() ?: mutableListOf()
-        val bulkAmount = product.bulkAmount ?: maxStackSize
 
         if (product.sellPricePerOne != null) {
+            val bulkAmount = product.bulkAmount ?: getItems(product.toItemStack()).sumOf { it.amount }
             if (1 < bulkAmount) lore.add(0, "${bulkAmount}개 일괄 판매 [Shift+오른쪽 클릭] : ${bulkAmount * product.sellPricePerOne}원".component(NamedTextColor.YELLOW))
             lore.add(0, "판매 [오른쪽 클릭] : ${product.sellPricePerOne}원".component(NamedTextColor.YELLOW))
         }
         else lore.add(0, "판매 불가".component(NamedTextColor.RED).style(Style.style(TextDecoration.ITALIC)))
 
         if (product.buyPricePerOne != null) {
+            val bulkAmount = product.bulkAmount ?: maxStackSize
             if (1 < bulkAmount) lore.add(0, "${bulkAmount}개 일괄 구매 [Shift+왼쪽 클릭] : ${bulkAmount * product.buyPricePerOne}원".component(NamedTextColor.YELLOW))
             lore.add(0, "구매 [왼쪽 클릭] : ${product.buyPricePerOne}원".component(NamedTextColor.YELLOW))
         }
@@ -140,20 +141,12 @@ class ShopWindow(private val player: Player) : InventoryWindow {
                 val product = SHOP_INFO_TEMP.products.find { it.key == buttonUid }!!
                 when (clickType) {
                     // 왼쪽 클릭 : 구매
-                    ClickType.LEFT -> {
-                        buyItem(ItemStack(item.type, product.singleAmount), product)
-                    }
-                    ClickType.SHIFT_LEFT -> {
-                        buyItem(ItemStack(item.type, product.bulkAmount ?: item.maxStackSize), product)
-                    }
+                    ClickType.LEFT -> buyItem(product, product.singleAmount)
+                    ClickType.SHIFT_LEFT -> buyItem(product, product.bulkAmount ?: item.maxStackSize)
 
                     // 오른쪽 클릭 : 판매
-                    ClickType.RIGHT -> {
-                        sellItem(ItemStack(item.type, product.singleAmount), product)
-                    }
-                    ClickType.SHIFT_RIGHT -> {
-                        sellItem(ItemStack(item.type, product.bulkAmount ?: item.maxStackSize), product)
-                    }
+                    ClickType.RIGHT -> sellItem(product, product.singleAmount)
+                    ClickType.SHIFT_RIGHT -> sellItem(product, product.bulkAmount)
 
                     else -> {}
                 }
@@ -163,11 +156,89 @@ class ShopWindow(private val player: Player) : InventoryWindow {
         return true
     }
 
-    private fun buyItem(item: ItemStack, product: ShopProduct) {
+    private fun buyItem(product: ShopProduct, amount: Int) {
 
     }
 
-    private fun sellItem(item: ItemStack, product: ShopProduct) {
+    private fun sellItem(product: ShopProduct, amount: Int?) {
+        if (product.sellPricePerOne == null) return
 
+        if (amount != null) {
+            val target = product.toItemStack(amount)
+            if (!player.inventory.contains(target)) {
+                player.sendMessage("${amount}개의 ${target.displayName}을(를) 가지고 있지 않아 판매하지 못했습니다.")
+                return
+            }
+
+            val revenue = amount * product.sellPricePerOne
+            val succeed = UserManager.getUser(player).transaction {
+                player.inventory.removeItem(target)
+                money += revenue
+            }
+
+            if (succeed) {
+                UserManager.getUser(player).run {
+                    player.sendMessage("${target.displayName}을(를) ${amount}개 판매하여 ${revenue}원을 얻었습니다.")
+                    player.updateScoreboard(this)
+                }
+            }
+            return
+        }
+
+        val target = product.toItemStack()
+        val items = getItems(target)
+        if (items.isEmpty()) {
+            player.sendMessage("${target.displayName}을(를) 가지고 있지 않아 판매하지 못했습니다.")
+            return
+        }
+
+        var count = 0
+        var revenue = 0L
+        val succeed = UserManager.getUser(player).transaction {
+            items.forEach {
+                player.inventory.remove(it)
+                count += it.amount
+                revenue += it.amount * product.sellPricePerOne
+            }
+            money += revenue
+        }
+
+        if (succeed) {
+            UserManager.getUser(player).run {
+                player.sendMessage("${target.displayName}을(를) ${count}개 판매하여 ${revenue}원을 얻었습니다.")
+                player.updateScoreboard(this)
+            }
+        }
+    }
+
+    private fun getItems(item: ItemStack) : List<ItemStack> {
+        val items = mutableListOf<ItemStack>()
+        val itemType = item.type
+        val customType = item.getCustomType()
+        val runeType = item.getRuneType()
+        val isChargedRune = item.isChargedRune()
+
+        player.inventory.forEach {
+            if (it == null) return@forEach
+
+            if (itemType != it.type) return@forEach
+
+            if (customType != null) {
+                val curItemType = it.getCustomType()
+
+                if (customType != curItemType) return@forEach
+
+                if (customType == ItemType.RUNE) {
+                    if (runeType != it.getRuneType()) return@forEach
+                    if (isChargedRune != it.isChargedRune()) return@forEach
+                }
+            }
+
+            if (item.displayName != it.displayName) return@forEach
+
+            items.add(it)
+        }
+
+        return items.toList()
     }
 }

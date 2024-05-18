@@ -59,6 +59,11 @@ fun ItemStack.getRuneProgress() : Double {
     return itemMeta.persistentDataContainer.get(Constants.RUNE_PROGRESS_KEY, PersistentDataType.DOUBLE) ?: throw Exception("올바른 룬 아이템이 아닙니다.")
 }
 
+fun ItemStack.isChargedRune() : Boolean {
+    val progress = itemMeta.persistentDataContainer.get(Constants.RUNE_PROGRESS_KEY, PersistentDataType.DOUBLE) ?: return false
+    return 1.0 <= progress
+}
+
 fun ItemStack.addRuneProgress(value: Double) {
     val runeType = getRuneType()
     if (runeType == RuneType.EMPTY) {

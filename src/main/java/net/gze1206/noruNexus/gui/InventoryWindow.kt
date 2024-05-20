@@ -4,11 +4,21 @@ import net.gze1206.noruNexus.core.Constants
 import net.gze1206.noruNexus.utils.not
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.event.inventory.InventoryAction
+import org.bukkit.event.inventory.InventoryType.SlotType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import kotlin.collections.HashMap
+
+interface InventoryClickWindow : InventoryWindow {
+    fun onClick(buttonUid: String, item: ItemStack, clickType: ClickType) : Boolean
+}
+
+interface InventoryActionWindow : InventoryWindow {
+    fun onAction(current: ItemStack?, cursor: ItemStack, rawSlot: Int, slotType: SlotType, action: InventoryAction) : Boolean
+}
 
 interface InventoryWindow {
     companion object {
@@ -22,8 +32,6 @@ interface InventoryWindow {
 
     fun inventory() : Inventory
     fun page() : Int
-
-    fun onClick(buttonUid: String, item: ItemStack, clickType: ClickType) : Boolean
 
     fun drawPagination(guiType: GuiType, prevButtonAt: Int, pageAt: Int, nextButtonAt: Int, maxPage: Int) {
         val page = page()

@@ -18,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.lang.Integer.min
 import kotlin.math.ceil
 
-class ShopWindow(private val player: Player, private val shop: Shop) : InventoryWindow {
+class ShopWindow(private val player: Player, private val shop: Shop) : InventoryClickWindow {
     companion object {
         private const val COL_COUNT = 9
         private const val ROW_COUNT = 6

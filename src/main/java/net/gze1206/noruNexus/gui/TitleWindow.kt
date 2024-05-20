@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.ceil
 
-class TitleWindow(private val player: Player) : InventoryWindow {
+class TitleWindow(private val player: Player) : InventoryClickWindow {
     companion object {
         private const val COL_COUNT = 9
         private const val ROW_COUNT = 6

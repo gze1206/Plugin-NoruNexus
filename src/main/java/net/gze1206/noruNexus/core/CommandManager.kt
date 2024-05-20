@@ -14,9 +14,10 @@ object CommandManager {
 
                 setPluginExecutor("set-money", UserMoneyCommand)
                 setPluginExecutor("nnreload", ReloadCommand)
-                setPluginExecutor("title", TitleCommand)
+                setPluginExecutor("칭호", TitleCommand)
                 setPluginExecutor("출금", GetMoneyCommand)
                 setPluginExecutor("상점", GlobalShopCommand)
+                setPluginExecutor("룬", RuneCommand)
             }
         }
     }

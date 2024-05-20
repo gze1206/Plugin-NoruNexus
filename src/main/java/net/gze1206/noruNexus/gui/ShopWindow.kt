@@ -14,6 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import java.lang.Integer.min
 import kotlin.math.ceil
 
 class ShopWindow(private val player: Player) : InventoryWindow {
@@ -62,7 +63,8 @@ class ShopWindow(private val player: Player) : InventoryWindow {
         const val shopName = "상점"
         val products = arrayOf(
             ShopProduct("custom:recall_scroll", 1000, null, 1, 10),
-            ShopProduct("minecraft:white_bed", 5000, null, 1, 1)
+            ShopProduct("minecraft:white_bed", 5000, null, 1, 1),
+            ShopProduct("minecraft:diorite", 10, 5, 1),
         )
     }
 
@@ -157,7 +159,37 @@ class ShopWindow(private val player: Player) : InventoryWindow {
     }
 
     private fun buyItem(product: ShopProduct, amount: Int) {
+        if (product.buyPricePerOne == null) return
 
+        val target = product.toItemStack(amount)
+        val price = amount * product.buyPricePerOne
+
+        var notEnoughMoney = false
+        val succeed = UserManager.getUser(player).transaction {
+            if (money < price)
+            {
+                notEnoughMoney = true
+                return@transaction
+            }
+
+            money -= price
+            player.inventory.addItem(target)
+        }
+
+        if (succeed) {
+            UserManager.getUser(player).run {
+                player.sendMessage(target.displayName() + !"을(를) ${amount}개 구매했습니다. (-${price}원)")
+                player.updateScoreboard(this)
+            }
+            update(page)
+        }
+        else if (notEnoughMoney)
+        {
+            UserManager.getUser(player).run {
+                player.sendMessage(!"소지금이 부족하여 " + target.displayName() + !"을(를) 구매하지 못했습니다.")
+                player.updateScoreboard(this)
+            }
+        }
     }
 
     private fun sellItem(product: ShopProduct, amount: Int?) {
@@ -165,22 +197,31 @@ class ShopWindow(private val player: Player) : InventoryWindow {
 
         if (amount != null) {
             val target = product.toItemStack(amount)
-            if (!player.inventory.contains(target)) {
-                player.sendMessage("${amount}개의 ${target.displayName}을(를) 가지고 있지 않아 판매하지 못했습니다.")
+            val items = getItems(target)
+            if (items.isEmpty() || items.sumOf { it.amount } < amount) {
+                player.sendMessage(!"${amount}개의 " + target.displayName() + !"을(를) 가지고 있지 않아 판매하지 못했습니다.")
                 return
             }
 
             val revenue = amount * product.sellPricePerOne
+            var remain = amount
             val succeed = UserManager.getUser(player).transaction {
-                player.inventory.removeItem(target)
+                items.forEach {
+                    if (remain == 0) return@forEach
+
+                    val quantity = min(remain, it.amount)
+                    it.subtract(quantity)
+                    remain -= quantity
+                }
                 money += revenue
             }
 
             if (succeed) {
                 UserManager.getUser(player).run {
-                    player.sendMessage("${target.displayName}을(를) ${amount}개 판매하여 ${revenue}원을 얻었습니다.")
+                    player.sendMessage(target.displayName() + !"을(를) ${amount}개 판매하여 ${revenue}원을 얻었습니다.")
                     player.updateScoreboard(this)
                 }
+                update(page)
             }
             return
         }
@@ -188,7 +229,7 @@ class ShopWindow(private val player: Player) : InventoryWindow {
         val target = product.toItemStack()
         val items = getItems(target)
         if (items.isEmpty()) {
-            player.sendMessage("${target.displayName}을(를) 가지고 있지 않아 판매하지 못했습니다.")
+            player.sendMessage(target.displayName() + !"을(를) 가지고 있지 않아 판매하지 못했습니다.")
             return
         }
 
@@ -205,9 +246,10 @@ class ShopWindow(private val player: Player) : InventoryWindow {
 
         if (succeed) {
             UserManager.getUser(player).run {
-                player.sendMessage("${target.displayName}을(를) ${count}개 판매하여 ${revenue}원을 얻었습니다.")
+                player.sendMessage(target.displayName() + !"을(를) ${count}개 판매하여 ${revenue}원을 얻었습니다.")
                 player.updateScoreboard(this)
             }
+            update(page)
         }
     }
 

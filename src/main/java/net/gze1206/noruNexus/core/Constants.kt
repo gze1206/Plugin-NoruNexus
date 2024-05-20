@@ -14,4 +14,5 @@ object Constants {
     val RUNE_TYPE_KEY = NamespacedKey(Main.getInstance(), "rune-type")
     val RUNE_PROGRESS_KEY = NamespacedKey(Main.getInstance(), "rune-progress")
     val MONEY_AMOUNT_KEY = NamespacedKey(Main.getInstance(), "money-amount")
+    const val SHOP_CUSTOM_ITEM_KEY_PREFIX = "custom:"
 }

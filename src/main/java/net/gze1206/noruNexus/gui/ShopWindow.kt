@@ -3,13 +3,14 @@ package net.gze1206.noruNexus.gui
 import net.gze1206.noruNexus.core.*
 import net.gze1206.noruNexus.gui.InventoryWindow.Companion.NEXT_BUTTON_UID
 import net.gze1206.noruNexus.gui.InventoryWindow.Companion.PREV_BUTTON_UID
+import net.gze1206.noruNexus.model.Shop
+import net.gze1206.noruNexus.model.ShopProduct
 import net.gze1206.noruNexus.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
@@ -17,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.lang.Integer.min
 import kotlin.math.ceil
 
-class ShopWindow(private val player: Player) : InventoryWindow {
+class ShopWindow(private val player: Player, private val shop: Shop) : InventoryWindow {
     companion object {
         private const val COL_COUNT = 9
         private const val ROW_COUNT = 6
@@ -29,45 +30,9 @@ class ShopWindow(private val player: Player) : InventoryWindow {
         private const val PAGE_AT = BUTTON_FROM + 4
         private const val NEXT_BUTTON_AT = BUTTON_FROM + 5
 
-        private const val CUSTOM_ITEM_KEY = "custom:"
-
-        private val windowTitle = SHOP_INFO_TEMP.shopName.component(NamedTextColor.DARK_AQUA)
     }
 
-    private data class ShopProduct(
-        val key: String,
-        val buyPricePerOne: Long?,
-        val sellPricePerOne: Long?,
-        val singleAmount: Int,
-        val bulkAmount: Int? = null,
-    ) {
-        fun isCustomItem() : Boolean {
-            return key.startsWith(CUSTOM_ITEM_KEY)
-        }
-
-        fun toItemStack(amount: Int = 1) : ItemStack {
-            if (isCustomItem()) {
-                return when (key.substring(CUSTOM_ITEM_KEY.length)) {
-                    "recall_scroll" -> ItemManager.createRecallScroll(amount)
-                    "rune" -> ItemManager.createRune(RuneType.EMPTY)
-
-                    else -> throw NotImplementedError()
-                }
-            }
-
-            return ItemStack(Material.matchMaterial(key)!!, amount)
-        }
-    }
-
-    private object SHOP_INFO_TEMP {
-        const val shopName = "상점"
-        val products = arrayOf(
-            ShopProduct("custom:recall_scroll", 1000, null, 1, 10),
-            ShopProduct("minecraft:white_bed", 5000, null, 1, 1),
-            ShopProduct("minecraft:diorite", 10, 5, 1),
-        )
-    }
-
+    private val windowTitle = shop.displayName.component(NamedTextColor.DARK_AQUA)
     private val inventory = Bukkit.createInventory(null, TOTAL_SIZE, windowTitle)
     override fun inventory() = inventory
 
@@ -80,13 +45,13 @@ class ShopWindow(private val player: Player) : InventoryWindow {
     }
 
     fun update(page: Int = 1) {
-        val maxPage = ceil(SHOP_INFO_TEMP.products.size / ITEMS_PER_PAGE.toDouble()).toInt()
+        val maxPage = ceil(shop.products.size / ITEMS_PER_PAGE.toDouble()).toInt()
 
         if (page < 1 || maxPage < page) {
             throw IndexOutOfBoundsException("올바르지 않은 상점 페이지에 접근했습니다.")
         }
         this.page = page
-        val items = SHOP_INFO_TEMP.products.drop(ITEMS_PER_PAGE * (page - 1)).take(ITEMS_PER_PAGE)
+        val items = shop.products.drop(ITEMS_PER_PAGE * (page - 1)).take(ITEMS_PER_PAGE)
 
         repeat(TOTAL_SIZE) {
             if (items.size <= it) {
@@ -140,7 +105,7 @@ class ShopWindow(private val player: Player) : InventoryWindow {
                 update(page + 1)
             }
             else -> {
-                val product = SHOP_INFO_TEMP.products.find { it.key == buttonUid }!!
+                val product = shop.products.find { it.key == buttonUid }!!
                 when (clickType) {
                     // 왼쪽 클릭 : 구매
                     ClickType.LEFT -> buyItem(product, product.singleAmount)

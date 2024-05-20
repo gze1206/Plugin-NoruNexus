@@ -3,6 +3,7 @@ package net.gze1206.noruNexus.core
 import net.gze1206.noruNexus.Main
 import net.gze1206.noruNexus.config.ConfigFile
 import net.gze1206.noruNexus.config.RuneConfig
+import net.gze1206.noruNexus.model.Shop
 import net.gze1206.noruNexus.model.Title
 
 object ConfigManager {
@@ -11,6 +12,7 @@ object ConfigManager {
     val config = Main.getInstance().config
     val title = ConfigFile(PATH, "title.yml")
     val rune = RuneConfig(PATH, "rune.yml")
+    val shop = ConfigFile(PATH, "shop.yml")
 
     fun init() {
         config.run {
@@ -23,17 +25,20 @@ object ConfigManager {
 
         Title.initConfig()
         rune.init()
+        Shop.initConfig()
     }
 
     fun reloadAll() {
         Main.getInstance().reloadConfig()
         title.reload()
         rune.reload()
+        shop.reload()
     }
 
     fun saveAll() {
         Main.getInstance().saveConfig()
         title.save()
         rune.save()
+        shop.save()
     }
 }

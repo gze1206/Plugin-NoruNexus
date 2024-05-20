@@ -22,7 +22,7 @@ class UserMoneyUpdateEvent(val sender: User, val money: Long, isAsync: Boolean) 
 
             if (e.money >= config.getLong("title-trigger.${Title.TitleId.RICH}"))
                 Title.give(e.sender, Title.TitleId.RICH)
-            if (e.money >= config.getLong("title-trigger.${Title.TitleId.RICH}"))
+            if (e.money >= config.getLong("title-trigger.${Title.TitleId.RIICH}"))
                 Title.give(e.sender, Title.TitleId.RIICH)
             if (e.money >= config.getLong("title-trigger.${Title.TitleId.RIIICH}"))
                 Title.give(e.sender, Title.TitleId.RIIICH)

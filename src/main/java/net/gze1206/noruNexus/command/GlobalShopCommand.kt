@@ -1,6 +1,8 @@
 package net.gze1206.noruNexus.command
 
 import net.gze1206.noruNexus.gui.ShopWindow
+import net.gze1206.noruNexus.model.Shop
+import net.gze1206.noruNexus.model.Shop.Companion.GLOBAL_ID
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
@@ -12,7 +14,9 @@ object GlobalShopCommand : TabExecutor {
             return false
         }
 
-        val window = ShopWindow(sender.player!!)
+        if (!Shop.has(GLOBAL_ID)) return false
+
+        val window = ShopWindow(sender.player!!, Shop.get(GLOBAL_ID))
         window.update(1)
         window.open()
         return true

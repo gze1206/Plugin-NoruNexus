@@ -2,6 +2,7 @@ package net.gze1206.noruNexus.core
 
 import net.gze1206.noruNexus.core.Constants.ITEM_TYPE_KEY
 import net.gze1206.noruNexus.core.Constants.MONEY_AMOUNT_KEY
+import net.gze1206.noruNexus.core.Constants.SHOP_CUSTOM_ITEM_KEY_PREFIX
 import net.gze1206.noruNexus.model.Title
 import net.gze1206.noruNexus.utils.component
 import net.gze1206.noruNexus.utils.not
@@ -11,6 +12,20 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 object ItemManager {
+    fun fromKey(key: String, amount: Int) : ItemStack {
+        if (key.startsWith(SHOP_CUSTOM_ITEM_KEY_PREFIX)) {
+            return when (key.substring(SHOP_CUSTOM_ITEM_KEY_PREFIX.length)) {
+                "recall_scroll" -> createRecallScroll(amount)
+                "rune" -> createRune(RuneType.EMPTY, amount)
+                "money" -> createMoney(amount.toLong())
+
+                else -> throw NotImplementedError()
+            }
+        }
+
+        return ItemStack(Material.matchMaterial(key)!!, amount)
+    }
+
     fun createMoney(amount: Long) : ItemStack {
         val item = ItemStack(Material.CLOCK, 1)
         val itemMeta = item.itemMeta

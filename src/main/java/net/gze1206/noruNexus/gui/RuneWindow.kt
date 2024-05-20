@@ -1,11 +1,11 @@
 package net.gze1206.noruNexus.gui
 
+import net.gze1206.noruNexus.core.ConfigManager
 import net.gze1206.noruNexus.core.ItemManager
 import net.gze1206.noruNexus.core.RuneType
 import net.gze1206.noruNexus.utils.component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryType
@@ -33,10 +33,17 @@ class RuneWindow(private val player: Player) : InventoryActionWindow {
 
     private fun update() {
         val recipes = mutableListOf<MerchantRecipe>()
-        val recipe = MerchantRecipe(ItemManager.createRune(RuneType.IRON), 10000)
-        recipe.addIngredient(ItemManager.createRune(RuneType.EMPTY))
-        recipe.addIngredient(ItemStack(Material.IRON_INGOT))
-        recipes.add(recipe)
+        //TODO: 룬들이 같은 아이템으로 취급되어 목록에 하나 밖에 안 뜸. 해결해야 함
+        ConfigManager.rune.getRecipeKeys().forEach {
+            val ingredients = ConfigManager.rune.getRecipe(it)
+            if (ingredients.isEmpty()) return@forEach
+
+            val runeType = RuneType.valueOf(it)
+            val recipe = MerchantRecipe(ItemManager.createRune(runeType), 10000)
+            recipe.addIngredient(ItemManager.createRune(RuneType.EMPTY))
+            ingredients.forEach { ingredient -> recipe.addIngredient(ingredient) }
+            recipes.add(recipe)
+        }
 
         merchant.recipes = recipes
     }

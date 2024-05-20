@@ -1,9 +1,6 @@
 package net.gze1206.noruNexus.model
 
-import net.gze1206.noruNexus.core.Constants.SHOP_CUSTOM_ITEM_KEY_PREFIX
 import net.gze1206.noruNexus.core.ItemManager
-import net.gze1206.noruNexus.core.RuneType
-import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 
@@ -32,20 +29,7 @@ data class ShopProduct(
         }
     }
 
-    fun isCustomItem() : Boolean {
-        return key.startsWith(SHOP_CUSTOM_ITEM_KEY_PREFIX)
-    }
-
     fun toItemStack(amount: Int = 1) : ItemStack {
-        if (isCustomItem()) {
-            return when (key.substring(SHOP_CUSTOM_ITEM_KEY_PREFIX.length)) {
-                "recall_scroll" -> ItemManager.createRecallScroll(amount)
-                "rune" -> ItemManager.createRune(RuneType.EMPTY)
-
-                else -> throw NotImplementedError()
-            }
-        }
-
-        return ItemStack(Material.matchMaterial(key)!!, amount)
+        return ItemManager.fromKey(key, amount)
     }
 }

@@ -1,6 +1,8 @@
 package net.gze1206.noruNexus.config
 
+import net.gze1206.noruNexus.core.ItemManager
 import net.gze1206.noruNexus.core.RuneType
+import org.bukkit.inventory.ItemStack
 import java.security.InvalidParameterException
 
 data class RuneConfig(val path: String, val fileName: String) {
@@ -14,6 +16,7 @@ data class RuneConfig(val path: String, val fileName: String) {
         private const val EMPTY_RUNE_DROPS_KEY = "empty-rune-drops"
         private const val RATE_KEY = "rate"
         private const val AMOUNT_KEY = "amount"
+        private const val RECIPES_KEY = "recipes"
     }
 
     private val config = ConfigFile(path, fileName)
@@ -56,6 +59,27 @@ data class RuneConfig(val path: String, val fileName: String) {
 
     fun getParameters(runeType: RuneType) : Array<Int> {
         return runeParameters[runeType]!!
+    }
+
+    fun getRecipeKeys() : List<String> {
+        val section = config.getConfig().getConfigurationSection(RECIPES_KEY) ?: return listOf()
+        return section.getKeys(false).toList()
+    }
+
+    fun getRecipe(name: String) : List<ItemStack> {
+        val ingredient = mutableListOf<ItemStack>()
+        val section = config.getConfig().getConfigurationSection("${RECIPES_KEY}.$name")
+
+        section?.getKeys(false)?.forEach {
+            val amountPath = "${it}.${AMOUNT_KEY}"
+            var amount = 1
+            if (section.contains(amountPath))
+                amount = section.getInt(amountPath)
+
+            ingredient.add(ItemManager.fromKey(it, amount))
+        }
+
+        return ingredient
     }
 
     fun reload() {

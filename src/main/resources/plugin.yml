@@ -26,6 +26,8 @@ commands:
   출금:
     description: 소지금을 아이템 형태로 꺼냅니다
     usage: "/<command> <amount>"
+    aliases:
+      - money
   상점:
     description: 어디서나 이용할 수 있는 상점 메뉴를 엽니다
     usage: "/<command>"

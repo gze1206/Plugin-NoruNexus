@@ -33,7 +33,6 @@ class RuneWindow(private val player: Player) : InventoryActionWindow {
 
     private fun update() {
         val recipes = mutableListOf<MerchantRecipe>()
-        //TODO: 룬들이 같은 아이템으로 취급되어 목록에 하나 밖에 안 뜸. 해결해야 함
         ConfigManager.rune.getRecipeKeys().forEach {
             val ingredients = ConfigManager.rune.getRecipe(it)
             if (ingredients.isEmpty()) return@forEach

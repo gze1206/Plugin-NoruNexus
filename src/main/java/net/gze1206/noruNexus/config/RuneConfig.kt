@@ -71,11 +71,7 @@ data class RuneConfig(val path: String, val fileName: String) {
         val section = config.getConfig().getConfigurationSection("${RECIPES_KEY}.$name")
 
         section?.getKeys(false)?.forEach {
-            val amountPath = "${it}.${AMOUNT_KEY}"
-            var amount = 1
-            if (section.contains(amountPath))
-                amount = section.getInt(amountPath)
-
+            val amount = section.getInt("${it}.${AMOUNT_KEY}")
             ingredient.add(ItemManager.fromKey(it, amount))
         }
 

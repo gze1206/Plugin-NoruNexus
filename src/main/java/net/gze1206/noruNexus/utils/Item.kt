@@ -28,7 +28,7 @@ fun ItemStack.setRune(runeType: RuneType, progress: Double) {
 
     val lore = mutableListOf<Component>()
     if (runeType != RuneType.EMPTY) {
-        var loreText = "각인 진행 ${"%.2f".format(progress * 100)}"
+        var loreText = "각인 진행 ${"%.2f".format(progress * 100)}%"
         if (isActive) {
             loreText += " (${floor(progress)}회 충전됨)"
         }

@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -19,6 +20,7 @@ object PlayerInteractEvent : Listener {
     @EventHandler
     fun onEvent(e: PlayerInteractEvent) {
         if (e.hand != EquipmentSlot.HAND) return
+        if (e.action != Action.RIGHT_CLICK_AIR && e.action != Action.RIGHT_CLICK_BLOCK) return
         if (!e.hasItem()) return
 
         val item = e.item!!
@@ -75,28 +77,31 @@ object PlayerInteractEvent : Listener {
             player.inventory.addItem(itemStack)
         }
 
-        when (runeType) {
-            RuneType.EMPTY -> return false
+        repeat(item.amount) {
+            when (runeType) {
+                RuneType.EMPTY -> return false
 
-            RuneType.BONE -> give(Material.BONE)
-            RuneType.GUNPOWDER -> give(Material.GUNPOWDER)
-            RuneType.IRON -> give(Material.IRON_INGOT)
-            RuneType.STRING -> give(Material.STRING)
+                RuneType.BONE -> give(Material.BONE)
+                RuneType.GUNPOWDER -> give(Material.GUNPOWDER)
+                RuneType.IRON -> give(Material.IRON_INGOT)
+                RuneType.STRING -> give(Material.STRING)
 
-            RuneType.ENDER -> {
-                give(Material.ENDER_PEARL)
-                if (Random.nextInt(101) <= params[2]) {
-                    give(Material.ENDER_EYE, 1, 1)
+                RuneType.ENDER -> {
+                    give(Material.ENDER_PEARL)
+                    if (Random.nextInt(101) <= params[2]) {
+                        give(Material.ENDER_EYE, 1, 1)
+                    }
                 }
-            }
-            RuneType.MONEY -> {
-                val money = ItemManager.createMoney(Random.nextLong(params[0].toLong(), params[1].toLong() + 1))
-                player.inventory.addItem(money)
-            }
+                RuneType.MONEY -> {
+                    val money = ItemManager.createMoney(Random.nextLong(params[0].toLong(), params[1].toLong() + 1))
+                    player.inventory.addItem(money)
+                }
 
-            else -> throw NotImplementedError()
+                else -> throw NotImplementedError()
+            }
         }
 
+        item.addRuneProgress(-1.0)
         return true
     }
 

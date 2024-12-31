@@ -23,7 +23,6 @@ repositories {
 
 dependencies {
     compileOnly "org.purpurmc.purpur:purpur-api:1.20.4-R0.1-SNAPSHOT"
-    compileOnly "io.lumine:Mythic-Dist:5.6.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 

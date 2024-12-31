@@ -24,6 +24,7 @@ class Main : JavaPlugin() {
         ConfigManager.init()
         ConfigManager.saveAll()
         Database.init()
+        _2025_NewYear.schedule()
         logger.info("플러그인 활성화!")
     }
 

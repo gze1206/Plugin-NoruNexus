@@ -27,6 +27,8 @@ data class Title(
 
         HELLDIVER("003-helldiver", "헬다이버", "네더에 진입한 사람에게 주어지는 칭호입니다.", Rarity.Epic, true),
 
+        _2025_NewYear("825-2025-new-year", "2025 새해", "2025년의 새해를 게임 속에서 함께했습니다.", Rarity.Legendary, true),
+
         TEST("999-test", "테스트", "테스트를 위한 칭호입니다.", Rarity.Normal, false);
 
         override fun toString() : String = this.key

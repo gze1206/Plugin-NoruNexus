@@ -15,7 +15,6 @@ object EventManager {
                 registerEvents(BlockBreakEvent)
                 registerEvents(EntityDeathEvent)
                 registerEvents(PlayerInteractEvent)
-                registerEvents(PlayerInteractEntityEvent)
                 registerEvents(PlayerJoinEvent)
                 registerEvents(PlayerTeleportEvent)
                 registerEvents(InventoryClickEvent)

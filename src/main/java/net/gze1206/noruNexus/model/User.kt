@@ -20,7 +20,6 @@ data class User (
     var money: Long,
 ) {
     companion object {
-        val scoreboardBuilder = ScoreboardBuilder()
 
         fun createTable(conn: Connection) {
             conn.createStatement().run {
@@ -83,6 +82,8 @@ data class User (
             return user
         }
     }
+
+    val scoreboardBuilder = ScoreboardBuilder()
 
     private fun update() : Boolean {
          return Database.query("UPDATE Users SET Nickname = ?, Title = ?, Money = ? WHERE Id = ?") {

@@ -11,12 +11,12 @@ fun Player.updateScoreboard(user: User) {
     val displayPrefix = title?.displayName ?: user.title
     val color = (title?.rarity ?: Title.Rarity.Normal).color
 
-    User.scoreboardBuilder.let {
+    user.scoreboardBuilder.let {
         it[1] = !"칭호 : " + if (user.title == null) !"(없음)" else "[$displayPrefix]".component(color)
         it[2] = !"소지금 : ${user.money}원"
         it[3] = !" "
 
-        scoreboard = it.scoreboard()
+        this.scoreboard = it.scoreboard()
     }
 }
 
